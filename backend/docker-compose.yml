@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: kisgep-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: kisgep
+      POSTGRES_USER: kisgep_user
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
