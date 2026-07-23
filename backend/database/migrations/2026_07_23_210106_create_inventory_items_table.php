@@ -13,6 +13,23 @@ return new class extends Migration
     {
         Schema::create('inventory_items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('product_id')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
+            $table->string('inventory_code')->unique();
+            $table->string('serial_number')->nullable()->unique();
+
+            $table->enum('status', [
+                'AVAILABLE',
+                'RENTED',
+                'MAINTENANCE',
+                'DAMAGED',
+                'INACTIVE',
+            ])->default('AVAILABLE');
+
+            $table->text('admin_note')->nullable();
             $table->timestamps();
         });
     }
