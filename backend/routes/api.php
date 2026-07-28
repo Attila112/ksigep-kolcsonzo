@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Auth\RegisterController;
+use App\Http\Controllers\Api\ReviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,6 @@ Route::middleware('auth:sanctum')->group(function () {
             'user' => $request->user(),
         ]);
     });
-
+    Route::post('/reviews', [ReviewController::class, 'store']);
     Route::post('/logout', LogoutController::class);
 });
