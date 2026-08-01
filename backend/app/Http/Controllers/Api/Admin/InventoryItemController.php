@@ -61,4 +61,28 @@ class InventoryItemController extends Controller
             'inventory_item' => $inventoryItem,
         ]);
     }
+    /**
+     * Returns the complete status history of a physical machine.
+     *
+     * The newest status change is returned first.
+     * Automatic system changes have a null changed_by value.
+     */
+    public function statusHistory(
+        InventoryItem $inventoryItem
+    ): JsonResponse {
+        $statusHistory = $inventoryItem
+            ->statusHistories()
+            ->with('changedBy:id,name')
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'inventory_item' => [
+                'id' => $inventoryItem->id,
+                'inventory_code' => $inventoryItem->inventory_code,
+                'status' => $inventoryItem->status,
+            ],
+            'status_history' => $statusHistory,
+        ]);
+    }
 }

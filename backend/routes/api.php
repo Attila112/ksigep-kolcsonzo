@@ -54,7 +54,11 @@ Route::middleware(['auth:sanctum', 'admin'])
             '/inventory-items/{inventoryItem}/status',
             [InventoryItemController::class, 'updateStatus']
         );
-        
+        Route::get(
+            '/inventory-items/{inventoryItem}/status-history',
+            [InventoryItemController::class, 'statusHistory']
+        );
+
         Route::get(
             '/bookings',
             [AdminBookingController::class, 'index']
