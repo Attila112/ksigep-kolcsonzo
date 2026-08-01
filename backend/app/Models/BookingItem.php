@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BookingItem extends Model
 {
@@ -39,5 +40,12 @@ class BookingItem extends Model
     public function inventoryItem(): BelongsTo
     {
         return $this->belongsTo(InventoryItem::class);
+    }
+    /**
+     * Returns the physical machines assigned to this booking item.
+     */
+    public function allocations(): HasMany
+    {
+        return $this->hasMany(BookingItemAllocation::class);
     }
 }

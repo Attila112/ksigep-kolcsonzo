@@ -9,6 +9,8 @@ use App\Services\BookingApprovalService;
 use DomainException;
 use App\Http\Requests\RejectBookingRequest;
 use App\Services\BookingRejectionService;
+use App\Http\Requests\IssueBookingRequest;
+use App\Services\BookingIssueService;
 
 class BookingController extends Controller
 {
@@ -68,6 +70,30 @@ class BookingController extends Controller
 
         return response()->json([
             'message' => 'A foglalás sikeresen elutasítva.',
+            'booking' => $booking,
+        ]);
+    }
+    /**
+     * Assigns physical machines and activates a confirmed booking.
+     */
+    public function issue(
+        IssueBookingRequest $request,
+        Booking $booking,
+        BookingIssueService $issueService,
+    ): JsonResponse {
+        try {
+            $booking = $issueService->issue(
+                booking: $booking,
+                inventoryItemIds: $request->validated('inventory_item_ids'),
+            );
+        } catch (DomainException $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], 422);
+        }
+
+        return response()->json([
+            'message' => 'A foglalás gépei sikeresen kiadásra kerültek.',
             'booking' => $booking,
         ]);
     }
