@@ -63,6 +63,10 @@ Route::middleware(['auth:sanctum', 'admin'])
             '/bookings',
             [AdminBookingController::class, 'index']
         );
+        Route::get(
+            '/bookings/{booking}',
+            [AdminBookingController::class, 'show']
+        );
         Route::post(
             '/bookings/{booking}/approve',
             [AdminBookingController::class, 'approve']
@@ -78,9 +82,5 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::post(
             '/bookings/{booking}/return-items',
             [AdminBookingController::class, 'returnItems']
-        );
-        Route::patch(
-            '/inventory-items/{inventoryItem}/status',
-            [InventoryItemController::class, 'updateStatus']
         );
     });

@@ -129,4 +129,22 @@ class BookingController extends Controller
             'booking' => $booking,
         ]);
     }
+    /**
+     * Returns the complete details of a booking for the admin.
+     *
+     * Includes the customer, booked products, allocated physical machines,
+     * return information and calculated totals.
+     */
+    public function show(Booking $booking): JsonResponse
+    {
+        $booking->load([
+            'user:id,name,email',
+            'items.product:id,name',
+            'items.allocations.inventoryItem:id,product_id,inventory_code,serial_number,status,admin_note',
+        ]);
+
+        return response()->json([
+            'booking' => $booking,
+        ]);
+    }
 }
