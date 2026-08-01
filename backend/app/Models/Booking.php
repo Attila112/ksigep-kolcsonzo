@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Booking extends Model
 {
@@ -37,6 +38,11 @@ class Booking extends Model
         'delivery_longitude' => 'decimal:7',
         'delivery_distance_km' => 'decimal:2',
     ];
+    protected $appends = [
+        'rental_total',
+        'deposit_total',
+        'total_payable',
+    ];
 
     public function user(): BelongsTo
     {
@@ -46,5 +52,34 @@ class Booking extends Model
     public function items(): HasMany
     {
         return $this->hasMany(BookingItem::class);
+    }
+    /**
+     * Returns the total rental fee of all booking items.
+     */
+    protected function rentalTotal(): Attribute
+    {
+        return Attribute::get(
+            fn(): float => (float) $this->items->sum('rental_subtotal')
+        );
+    }
+
+    /**
+     * Returns the total deposit amount of all booking items.
+     */
+    protected function depositTotal(): Attribute
+    {
+        return Attribute::get(
+            fn(): float => (float) $this->items->sum('deposit_subtotal')
+        );
+    }
+
+    /**
+     * Returns the combined rental fee and deposit amount.
+     */
+    protected function totalPayable(): Attribute
+    {
+        return Attribute::get(
+            fn(): float => $this->rental_total + $this->deposit_total
+        );
     }
 }

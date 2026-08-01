@@ -65,7 +65,10 @@ class BookingCreateTest extends TestCase
             )
             ->assertJsonPath('booking.user_id', null)
             ->assertJsonPath('booking.status', 'PENDING')
-            ->assertJsonCount(2, 'booking.items');
+            ->assertJsonCount(2, 'booking.items')
+            ->assertJsonPath('booking.rental_total', 63000)
+            ->assertJsonPath('booking.deposit_total', 70000)
+            ->assertJsonPath('booking.total_payable', 133000);
 
         $this->assertDatabaseCount('bookings', 1);
         $this->assertDatabaseCount('booking_items', 2);
