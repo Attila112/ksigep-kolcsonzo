@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\Admin\InventoryItemController;
 use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\Admin\BookingController as AdminBookingController;
 
 
 use Illuminate\Http\Request;
@@ -34,7 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'user' => $request->user(),
         ]);
     });
-    Route::get('/my-bookings',[BookingController::class, 'indexMine']);
+    Route::get('/my-bookings', [BookingController::class, 'indexMine']);
     Route::post('/reviews', [ReviewController::class, 'store']);
     Route::post('/logout', LogoutController::class);
 });
@@ -48,5 +49,9 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::post(
             '/inventory-items',
             [InventoryItemController::class, 'store']
+        );
+        Route::get(
+            '/bookings',
+            [AdminBookingController::class, 'index']
         );
     });
