@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use Illuminate\Http\JsonResponse;
+use App\Services\BookingApprovalService;
+use DomainException;
 
 class BookingController extends Controller
 {
@@ -21,6 +23,26 @@ class BookingController extends Controller
 
         return response()->json([
             'bookings' => $bookings,
+        ]);
+    }
+    /**
+     * Approves a pending booking after a final availability check.
+     */
+    public function approve(
+        Booking $booking,
+        BookingApprovalService $approvalService,
+    ): JsonResponse {
+        try {
+            $booking = $approvalService->approve($booking);
+        } catch (DomainException $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], 422);
+        }
+
+        return response()->json([
+            'message' => 'A foglalás sikeresen jóváhagyva.',
+            'booking' => $booking,
         ]);
     }
 }

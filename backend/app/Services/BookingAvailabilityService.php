@@ -9,10 +9,18 @@ use InvalidArgumentException;
 
 class BookingAvailabilityService
 {
+    /**
+     * Returns the available inventory quantity for a product and date range.
+     *
+     * Active inventory items are counted, while overlapping PENDING,
+     * CONFIRMED and ACTIVE bookings reduce the available quantity.
+     * A booking can optionally be excluded, for example during approval.
+     */
     public function availableQuantity(
         Product $product,
         string $startDate,
         string $endDate,
+        ?int $excludeBookingId = null,
     ): int {
         $start = Carbon::parse($startDate)->startOfDay();
         $end = Carbon::parse($endDate)->startOfDay();
@@ -30,7 +38,11 @@ class BookingAvailabilityService
 
         $reservedQuantity = BookingItem::query()
             ->where('product_id', $product->id)
-            ->whereHas('booking', function ($query) use ($start, $end) {
+            ->whereHas('booking', function ($query) use (
+                $start,
+                $end,
+                $excludeBookingId
+            ) {
                 $query
                     ->whereIn('status', [
                         'PENDING',
@@ -39,6 +51,10 @@ class BookingAvailabilityService
                     ])
                     ->whereDate('start_date', '<=', $end)
                     ->whereDate('end_date', '>=', $start);
+
+                if ($excludeBookingId !== null) {
+                    $query->where('id', '!=', $excludeBookingId);
+                }
             })
             ->sum('quantity');
 

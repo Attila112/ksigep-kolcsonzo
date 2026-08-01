@@ -168,4 +168,45 @@ class BookingAvailabilityServiceTest extends TestCase
             'status' => 'PENDING',
         ], $attributes));
     }
+    public function test_it_can_exclude_a_booking_from_reserved_quantity(): void
+    {
+        $product = $this->createProduct();
+
+        $this->createInventoryItems($product, 2);
+
+        $booking = $this->createBooking([
+            'start_date' => '2026-08-10',
+            'end_date' => '2026-08-12',
+            'status' => 'PENDING',
+        ]);
+
+        $booking->items()->create([
+            'product_id' => $product->id,
+            'inventory_item_id' => null,
+            'quantity' => 2,
+            'price_per_day' => 8000,
+            'deposit_per_item' => 30000,
+            'rental_days' => 3,
+            'rental_subtotal' => 48000,
+            'deposit_subtotal' => 60000,
+        ]);
+
+        $service = new BookingAvailabilityService();
+
+        $availableWithoutExclusion = $service->availableQuantity(
+            product: $product,
+            startDate: '2026-08-10',
+            endDate: '2026-08-12',
+        );
+
+        $availableWithExclusion = $service->availableQuantity(
+            product: $product,
+            startDate: '2026-08-10',
+            endDate: '2026-08-12',
+            excludeBookingId: $booking->id,
+        );
+
+        $this->assertSame(0, $availableWithoutExclusion);
+        $this->assertSame(2, $availableWithExclusion);
+    }
 }
