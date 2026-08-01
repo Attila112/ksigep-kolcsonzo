@@ -58,4 +58,8 @@ Route::middleware(['auth:sanctum', 'admin'])
             '/bookings/{booking}/approve',
             [AdminBookingController::class, 'approve']
         );
+        Route::post(
+            '/bookings/{booking}/reject',
+            [AdminBookingController::class, 'reject']
+        );
     });
