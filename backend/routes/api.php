@@ -11,6 +11,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', RegisterController::class);
     Route::post('/login', LoginController::class);
 });
+Route::get('/products/{product}/reviews', [ReviewController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {

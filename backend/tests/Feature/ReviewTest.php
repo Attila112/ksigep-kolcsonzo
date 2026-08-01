@@ -195,4 +195,120 @@ class ReviewTest extends TestCase
 
         $this->assertDatabaseCount('reviews', 1);
     }
+    public function test_product_reviews_endpoint_returns_only_approved_reviews(): void
+    {
+        $approvedUser = User::factory()->create([
+            'name' => 'Jóváhagyott Felhasználó',
+        ]);
+
+        $pendingUser = User::factory()->create([
+            'name' => 'Függő Felhasználó',
+        ]);
+
+        $product = $this->createProduct();
+
+        $approvedReview = Review::query()->create([
+            'user_id' => $approvedUser->id,
+            'product_id' => $product->id,
+            'rating' => 5,
+            'title' => 'Jóváhagyott értékelés',
+            'comment' => 'Ez az értékelés megjelenhet.',
+            'approved' => true,
+        ]);
+
+        $pendingReview = Review::query()->create([
+            'user_id' => $pendingUser->id,
+            'product_id' => $product->id,
+            'rating' => 2,
+            'title' => 'Jóváhagyásra vár',
+            'comment' => 'Ez még nem jelenhet meg.',
+            'approved' => false,
+        ]);
+
+        $response = $this->getJson(
+            "/api/products/{$product->id}/reviews"
+        );
+
+        $response
+            ->assertOk()
+            ->assertJsonCount(1, 'reviews')
+            ->assertJsonPath('reviews.0.id', $approvedReview->id)
+            ->assertJsonPath('reviews.0.user.id', $approvedUser->id)
+            ->assertJsonPath(
+                'reviews.0.user.name',
+                'Jóváhagyott Felhasználó'
+            );
+
+        $response->assertJsonMissing([
+            'id' => $pendingReview->id,
+        ]);
+    }
+    public function test_product_reviews_are_ordered_by_latest_first(): void
+    {
+        $olderUser = User::factory()->create();
+        $newerUser = User::factory()->create();
+        $product = $this->createProduct();
+
+        $olderReview = Review::query()->create([
+            'user_id' => $olderUser->id,
+            'product_id' => $product->id,
+            'rating' => 4,
+            'title' => 'Régebbi értékelés',
+            'comment' => 'Régebbi vélemény.',
+            'approved' => true,
+        ]);
+
+        $olderReview
+            ->forceFill([
+                'created_at' => now()->subDay(),
+                'updated_at' => now()->subDay(),
+            ])
+            ->saveQuietly();
+
+        $newerReview = Review::query()->create([
+            'user_id' => $newerUser->id,
+            'product_id' => $product->id,
+            'rating' => 5,
+            'title' => 'Újabb értékelés',
+            'comment' => 'Újabb vélemény.',
+            'approved' => true,
+        ]);
+
+        $newerReview
+            ->forceFill([
+                'created_at' => now(),
+                'updated_at' => now(),
+            ])
+            ->saveQuietly();
+
+        $response = $this->getJson(
+            "/api/products/{$product->id}/reviews"
+        );
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('reviews.0.id', $newerReview->id)
+            ->assertJsonPath('reviews.1.id', $olderReview->id);
+    }
+
+    public function test_product_reviews_endpoint_returns_empty_list_when_no_reviews_exist(): void
+    {
+        $product = $this->createProduct();
+
+        $response = $this->getJson(
+            "/api/products/{$product->id}/reviews"
+        );
+
+        $response
+            ->assertOk()
+            ->assertExactJson([
+                'reviews' => [],
+            ]);
+    }
+
+    public function test_product_reviews_endpoint_returns_not_found_for_missing_product(): void
+    {
+        $this->getJson('/api/products/999999/reviews')
+            ->assertNotFound();
+    }
 }
