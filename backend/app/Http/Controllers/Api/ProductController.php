@@ -12,7 +12,20 @@ class ProductController extends Controller
     {
         $products = Product::query()
             ->where('active', true)
+            ->whereHas('category', function ($query) {
+                $query->where('active', true);
+            })
             ->with('category:id,name')
+            ->withCount([
+                'reviews as reviews_count' => function ($query) {
+                    $query->where('approved', true);
+                },
+            ])
+            ->withAvg([
+                'reviews as average_rating' => function ($query) {
+                    $query->where('approved', true);
+                },
+            ], 'rating')
             ->latest()
             ->get();
 
