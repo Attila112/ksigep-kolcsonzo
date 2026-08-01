@@ -27,4 +27,11 @@ class InventoryItem extends Model
     {
         return $this->hasMany(BookingItemAllocation::class);
     }
+    /**
+     * Returns the full status history of this physical machine.
+     */
+    public function statusHistories(): HasMany
+    {
+        return $this->hasMany(InventoryStatusHistory::class);
+    }
 }

@@ -54,4 +54,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Booking::class);
     }
+    /**
+     * Returns the inventory status changes performed by this user.
+     */
+    public function inventoryStatusChanges(): HasMany
+    {
+        return $this->hasMany(
+            InventoryStatusHistory::class,
+            'changed_by_user_id'
+        );
+    }
 }

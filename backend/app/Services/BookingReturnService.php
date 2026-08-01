@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Booking;
 use App\Models\BookingItemAllocation;
+use App\Models\InventoryStatusHistory;
 use DomainException;
 use Illuminate\Support\Facades\DB;
 
@@ -19,6 +20,8 @@ class BookingReturnService
      * The booking remains ACTIVE while at least one allocated machine
      * has not been returned. It becomes COMPLETED only after every
      * allocation has a returned_at timestamp.
+     *
+     * Every inventory status change is also stored in the status history.
      *
      * @param array<int, int> $inventoryItemIds
      */
@@ -40,7 +43,7 @@ class BookingReturnService
                 ->whereIn('inventory_item_id', $inventoryItemIds)
                 ->whereHas(
                     'bookingItem',
-                    fn($query) => $query->where(
+                    fn ($query) => $query->where(
                         'booking_id',
                         $booking->id
                     )
@@ -60,8 +63,8 @@ class BookingReturnService
             }
 
             if ($allocations->contains(
-                fn(BookingItemAllocation $allocation): bool =>
-                $allocation->returned_at !== null
+                fn (BookingItemAllocation $allocation): bool =>
+                    $allocation->returned_at !== null
             )) {
                 throw new DomainException(
                     'A kiválasztott gépek egyike már visszavételre került.'
@@ -69,12 +72,24 @@ class BookingReturnService
             }
 
             foreach ($allocations as $allocation) {
+                $inventoryItem = $allocation->inventoryItem;
+                $previousStatus = $inventoryItem->status;
+
                 $allocation->update([
                     'returned_at' => now(),
                 ]);
 
-                $allocation->inventoryItem->update([
+                $inventoryItem->update([
                     'status' => 'INSPECTION',
+                ]);
+
+                InventoryStatusHistory::query()->create([
+                    'inventory_item_id' => $inventoryItem->id,
+                    'changed_by_user_id' => null,
+                    'from_status' => $previousStatus,
+                    'to_status' => 'INSPECTION',
+                    'note' =>
+                        'Automatikus státuszváltás gépvisszavételkor.',
                 ]);
             }
 
@@ -85,7 +100,7 @@ class BookingReturnService
             $hasUnreturnedAllocations = BookingItemAllocation::query()
                 ->whereHas(
                     'bookingItem',
-                    fn($query) => $query->where(
+                    fn ($query) => $query->where(
                         'booking_id',
                         $booking->id
                     )

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Booking;
 use App\Models\BookingItemAllocation;
 use App\Models\InventoryItem;
+use App\Models\InventoryStatusHistory;
 use DomainException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +19,8 @@ class BookingIssueService
      * to one of the products requested in the booking.
      * On success, allocations are created, machines become RENTED,
      * and the booking status changes to ACTIVE.
+     *
+     * Every inventory status change is also stored in the status history.
      *
      * @param array<int, int> $inventoryItemIds
      */
@@ -58,8 +61,8 @@ class BookingIssueService
             }
 
             if ($inventoryItems->contains(
-                fn(InventoryItem $item): bool =>
-                $item->status !== 'AVAILABLE'
+                fn (InventoryItem $item): bool =>
+                    $item->status !== 'AVAILABLE'
             )) {
                 throw new DomainException(
                     'Csak elérhető állapotú gép adható ki.'
@@ -85,8 +88,19 @@ class BookingIssueService
                         'returned_at' => null,
                     ]);
 
+                    $previousStatus = $inventoryItem->status;
+
                     $inventoryItem->update([
                         'status' => 'RENTED',
+                    ]);
+
+                    InventoryStatusHistory::query()->create([
+                        'inventory_item_id' => $inventoryItem->id,
+                        'changed_by_user_id' => null,
+                        'from_status' => $previousStatus,
+                        'to_status' => 'RENTED',
+                        'note' =>
+                            'Automatikus státuszváltás gépkiadáskor.',
                     ]);
                 }
             }

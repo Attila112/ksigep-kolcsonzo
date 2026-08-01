@@ -48,6 +48,7 @@ class InventoryItemController extends Controller
                 inventoryItem: $inventoryItem,
                 status: $request->validated('status'),
                 adminNote: $request->validated('admin_note'),
+                changedBy: $request->user(),
             );
         } catch (DomainException $exception) {
             return response()->json([

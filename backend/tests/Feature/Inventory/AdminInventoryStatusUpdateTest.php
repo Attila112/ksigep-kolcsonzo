@@ -14,6 +14,7 @@ class AdminInventoryStatusUpdateTest extends TestCase
 {
     use RefreshDatabase;
 
+
     public function test_admin_can_mark_inspected_machine_as_available(): void
     {
         $admin = $this->createAdmin();
@@ -48,10 +49,12 @@ class AdminInventoryStatusUpdateTest extends TestCase
                 'A gép megfelelő állapotú.'
             );
 
-        $this->assertDatabaseHas('inventory_items', [
-            'id' => $inventoryItem->id,
-            'status' => 'AVAILABLE',
-            'admin_note' => 'A gép megfelelő állapotú.',
+        $this->assertDatabaseHas('inventory_status_histories', [
+            'inventory_item_id' => $inventoryItem->id,
+            'changed_by_user_id' => $admin->id,
+            'from_status' => 'INSPECTION',
+            'to_status' => 'AVAILABLE',
+            'note' => 'A gép megfelelő állapotú.',
         ]);
     }
 
@@ -80,10 +83,12 @@ class AdminInventoryStatusUpdateTest extends TestCase
                 'MAINTENANCE'
             );
 
-        $this->assertDatabaseHas('inventory_items', [
-            'id' => $inventoryItem->id,
-            'status' => 'MAINTENANCE',
-            'admin_note' => 'Időszakos szerviz szükséges.',
+        $this->assertDatabaseHas('inventory_status_histories', [
+            'inventory_item_id' => $inventoryItem->id,
+            'changed_by_user_id' => $admin->id,
+            'from_status' => 'AVAILABLE',
+            'to_status' => 'MAINTENANCE',
+            'note' => 'Időszakos szerviz szükséges.',
         ]);
     }
 
@@ -168,6 +173,10 @@ class AdminInventoryStatusUpdateTest extends TestCase
             'id' => $inventoryItem->id,
             'status' => 'RENTED',
         ]);
+        $this->assertDatabaseCount(
+            'inventory_status_histories',
+            0
+        );
     }
 
     public function test_admin_cannot_set_status_to_rented_manually(): void
