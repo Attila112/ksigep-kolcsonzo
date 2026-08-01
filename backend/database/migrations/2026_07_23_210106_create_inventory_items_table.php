@@ -24,6 +24,7 @@ return new class extends Migration
             $table->enum('status', [
                 'AVAILABLE',
                 'RENTED',
+                'INSPECTION',
                 'MAINTENANCE',
                 'DAMAGED',
                 'INACTIVE',

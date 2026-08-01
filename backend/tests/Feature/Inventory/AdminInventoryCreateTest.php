@@ -223,4 +223,36 @@ class AdminInventoryCreateTest extends TestCase
             'active' => true,
         ]);
     }
+    public function test_admin_can_create_inventory_item_with_inspection_status(): void
+    {
+        $admin = User::factory()->create([
+            'role' => 'ADMIN',
+            'active' => true,
+        ]);
+
+        $product = $this->createProduct();
+
+        Sanctum::actingAs($admin);
+
+        $response = $this->postJson('/api/admin/inventory-items', [
+            'product_id' => $product->id,
+            'inventory_code' => 'BM-INSPECTION',
+            'serial_number' => null,
+            'status' => 'INSPECTION',
+            'admin_note' => 'Visszavétel utáni ellenőrzés.',
+        ]);
+
+        $response
+            ->assertCreated()
+            ->assertJsonPath(
+                'inventory_item.status',
+                'INSPECTION'
+            );
+
+        $this->assertDatabaseHas('inventory_items', [
+            'product_id' => $product->id,
+            'inventory_code' => 'BM-INSPECTION',
+            'status' => 'INSPECTION',
+        ]);
+    }
 }

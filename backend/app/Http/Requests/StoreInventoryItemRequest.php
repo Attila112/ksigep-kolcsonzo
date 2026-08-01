@@ -37,6 +37,7 @@ class StoreInventoryItemRequest extends FormRequest
                 Rule::in([
                     'AVAILABLE',
                     'RENTED',
+                    'INSPECTION',
                     'MAINTENANCE',
                     'DAMAGED',
                     'INACTIVE',

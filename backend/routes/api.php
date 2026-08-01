@@ -66,4 +66,8 @@ Route::middleware(['auth:sanctum', 'admin'])
             '/bookings/{booking}/issue',
             [AdminBookingController::class, 'issue']
         );
+        Route::post(
+            '/bookings/{booking}/return-items',
+            [AdminBookingController::class, 'returnItems']
+        );
     });

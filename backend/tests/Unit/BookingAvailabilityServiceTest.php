@@ -209,4 +209,28 @@ class BookingAvailabilityServiceTest extends TestCase
         $this->assertSame(0, $availableWithoutExclusion);
         $this->assertSame(2, $availableWithExclusion);
     }
+    public function test_inspection_inventory_items_are_not_counted_as_available(): void
+    {
+        $product = $this->createProduct();
+
+        $this->createInventoryItems($product, 2);
+
+        InventoryItem::query()->create([
+            'product_id' => $product->id,
+            'inventory_code' => 'BM-INSPECTION',
+            'serial_number' => null,
+            'status' => 'INSPECTION',
+            'admin_note' => 'Ellenőrzésre vár.',
+        ]);
+
+        $service = new BookingAvailabilityService();
+
+        $availableQuantity = $service->availableQuantity(
+            product: $product,
+            startDate: '2026-08-10',
+            endDate: '2026-08-12',
+        );
+
+        $this->assertSame(2, $availableQuantity);
+    }
 }

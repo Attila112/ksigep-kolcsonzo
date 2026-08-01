@@ -11,6 +11,8 @@ use App\Http\Requests\RejectBookingRequest;
 use App\Services\BookingRejectionService;
 use App\Http\Requests\IssueBookingRequest;
 use App\Services\BookingIssueService;
+use App\Http\Requests\ReturnBookingItemsRequest;
+use App\Services\BookingReturnService;
 
 class BookingController extends Controller
 {
@@ -94,6 +96,36 @@ class BookingController extends Controller
 
         return response()->json([
             'message' => 'A foglalás gépei sikeresen kiadásra kerültek.',
+            'booking' => $booking,
+        ]);
+    }
+    /**
+     * Returns selected physical machines from an active booking.
+     *
+     * Returned machines enter INSPECTION status. The booking becomes
+     * COMPLETED only when every allocated machine has been returned.
+     */
+    public function returnItems(
+        ReturnBookingItemsRequest $request,
+        Booking $booking,
+        BookingReturnService $returnService,
+    ): JsonResponse {
+        try {
+            $booking = $returnService->returnItems(
+                booking: $booking,
+                inventoryItemIds: $request->validated(
+                    'inventory_item_ids'
+                ),
+            );
+        } catch (DomainException $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], 422);
+        }
+
+        return response()->json([
+            'message' =>
+            'A kiválasztott gépek sikeresen visszavételre kerültek.',
             'booking' => $booking,
         ]);
     }
