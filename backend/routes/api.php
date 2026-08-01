@@ -17,6 +17,10 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', LoginController::class);
 });
 
+Route::get(
+    '/products/{product}/availability',
+    [ProductController::class, 'availability']
+);
 
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
+use App\Http\Requests\ProductAvailabilityRequest;
+use App\Services\BookingAvailabilityService;
 
 class ProductController extends Controller
 {
@@ -58,6 +60,38 @@ class ProductController extends Controller
 
         return response()->json([
             'product' => $product,
+        ]);
+    }
+    /**
+     * Returns the available quantity of a product
+     * for the requested rental period.
+     */
+    public function availability(
+        ProductAvailabilityRequest $request,
+        Product $product,
+        BookingAvailabilityService $availabilityService,
+    ): JsonResponse {
+        if (
+            ! $product->active ||
+            ! $product->category()->where('active', true)->exists()
+        ) {
+            abort(404);
+        }
+
+        $validated = $request->validated();
+
+        $availableQuantity = $availabilityService->availableQuantity(
+            product: $product,
+            startDate: $validated['start_date'],
+            endDate: $validated['end_date'],
+        );
+
+        return response()->json([
+            'product_id' => $product->id,
+            'start_date' => $validated['start_date'],
+            'end_date' => $validated['end_date'],
+            'available_quantity' => $availableQuantity,
+            'available' => $availableQuantity > 0,
         ]);
     }
 }
