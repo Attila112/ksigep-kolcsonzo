@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\Admin\InventoryItemController;
+use App\Http\Controllers\Api\BookingController;
 
 
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
 Route::get('/products/{product}/reviews', [ReviewController::class, 'index']);
 
-
+Route::post('/bookings', [BookingController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
