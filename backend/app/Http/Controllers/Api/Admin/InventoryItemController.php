@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\InventoryItem;
 use Illuminate\Http\JsonResponse;
+use App\Http\Requests\StoreInventoryItemRequest;
 
 class InventoryItemController extends Controller
 {
@@ -18,5 +19,16 @@ class InventoryItemController extends Controller
         return response()->json([
             'inventory_items' => $inventoryItems,
         ]);
+    }
+    public function store(StoreInventoryItemRequest $request): JsonResponse
+    {
+        $inventoryItem = InventoryItem::query()->create(
+            $request->validated()
+        );
+
+        return response()->json([
+            'message' => 'A géppéldány sikeresen létrejött.',
+            'inventory_item' => $inventoryItem,
+        ], 201);
     }
 }

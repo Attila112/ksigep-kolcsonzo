@@ -39,4 +39,8 @@ Route::middleware(['auth:sanctum', 'admin'])
             '/inventory-items',
             [InventoryItemController::class, 'index']
         );
+        Route::post(
+            '/inventory-items',
+            [InventoryItemController::class, 'store']
+        );
     });
