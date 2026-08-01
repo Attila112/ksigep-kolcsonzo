@@ -47,4 +47,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Review::class);
     }
+    /**
+     * Returns the bookings created by the registered user.
+     */
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
+    }
 }

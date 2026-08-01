@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'user' => $request->user(),
         ]);
     });
+    Route::get('/my-bookings',[BookingController::class, 'indexMine']);
     Route::post('/reviews', [ReviewController::class, 'store']);
     Route::post('/logout', LogoutController::class);
 });
