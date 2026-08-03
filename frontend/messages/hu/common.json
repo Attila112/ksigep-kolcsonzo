@@ -1,0 +1,11 @@
+{
+  "applicationName": "Kisgép-kölcsönző",
+  "loading": "Betöltés...",
+  "error": "Hiba történt.",
+  "actions": {
+    "details": "Részletek",
+    "save": "Mentés",
+    "cancel": "Mégse",
+    "back": "Vissza"
+  }
+}
