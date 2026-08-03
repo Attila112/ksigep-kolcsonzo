@@ -5,6 +5,8 @@ import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Hero } from "@/components/home/Hero";
 import { Section } from "@/components/ui/Section";
+import { WorkTypeSection } from "@/components/home/WorkTypeSection";
+import { getWorkTypes } from "@/services/workTypeService";
 
 type HomePageProps = {
     params: Promise<{
@@ -20,23 +22,29 @@ export default async function HomePage({
     setRequestLocale(locale);
 
     const t = await getTranslations("Home");
-    const data = await getProducts();
+    const [productData, workTypeData] = await Promise.all([
+        getProducts(),
+        getWorkTypes(),
+    ]);
 
     return (
         <>
             <Hero />
 
-            <Section className="pt-0">
+            <WorkTypeSection
+                workTypes={workTypeData.work_types}
+            />
+
+            <Section>
                 <Container>
-                    <Heading
-                        level={2}
-                        size="lg"
-                    >
+                    <Heading level={2} size="lg">
                         {t("featuredProducts.title")}
                     </Heading>
 
                     <div className="mt-6">
-                        <ProductList products={data.products} />
+                        <ProductList
+                            products={productData.products}
+                        />
                     </div>
                 </Container>
             </Section>
