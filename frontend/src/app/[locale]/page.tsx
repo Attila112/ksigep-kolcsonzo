@@ -1,6 +1,8 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ProductList } from "@/components/product/ProductList";
 import { getProducts } from "@/services/productService";
+import { Container } from "@/components/ui/Container";
+import { Heading } from "@/components/ui/Heading";
 
 type HomePageProps = {
     params: Promise<{
@@ -20,9 +22,14 @@ export default async function HomePage({
 
     return (
         <main>
-            <h1>{t("title")}</h1>
-
-            <ProductList products={data.products} />
+            <Container className="py-8 sm:py-12">
+                <Heading level={1} size="xl">
+                    {t("title")}
+                </Heading>
+                <div className="mt-6">
+                    <ProductList products={data.products} />
+                </div>
+            </Container>
         </main>
     );
 }

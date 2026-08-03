@@ -3,6 +3,8 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { routing } from "@/core/i18n/routing";
+import { getTranslations } from "next-intl/server";
+import { PublicLayout } from "@/components/layout/PublicLayout";
 
 type LocaleLayoutProps = {
     children: ReactNode;
@@ -34,10 +36,19 @@ export default async function LocaleLayout({
     setRequestLocale(locale);
 
     const messages = await getMessages();
+    const common = await getTranslations("Common");
 
     return (
         <NextIntlClientProvider messages={messages}>
-            {children}
+            <PublicLayout
+                applicationName={common("applicationName")}
+                productsLabel={common("navigation.products")}
+                copyright={common("footer.copyright", {
+                    year: new Date().getFullYear(),
+                })}
+            >
+                {children}
+            </PublicLayout>
         </NextIntlClientProvider>
     );
 }

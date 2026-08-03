@@ -2,6 +2,12 @@
   "applicationName": "Kisgép-kölcsönző",
   "loading": "Betöltés...",
   "error": "Hiba történt.",
+  "navigation": {
+    "products": "Gépek"
+  },
+  "footer": {
+    "copyright": "© {year} Minden jog fenntartva."
+  },
   "actions": {
     "details": "Részletek",
     "save": "Mentés",
