@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\Admin\InventoryItemController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\Admin\BookingController as AdminBookingController;
+use App\Http\Controllers\Api\WorkTypeController;
 
 
 use Illuminate\Http\Request;
@@ -21,6 +22,15 @@ Route::middleware('guest')->group(function () {
 Route::get(
     '/products/{product}/availability',
     [ProductController::class, 'availability']
+);
+Route::get(
+    '/work-types',
+    [WorkTypeController::class, 'index']
+);
+
+Route::get(
+    '/work-types/{workType}/products',
+    [WorkTypeController::class, 'products']
 );
 
 Route::get('/products', [ProductController::class, 'index']);

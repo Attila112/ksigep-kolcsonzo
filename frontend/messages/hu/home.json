@@ -1,4 +1,13 @@
 {
-  "title": "Kisgép-kölcsönző",
-  "noProducts": "Jelenleg nincs elérhető termék."
+    "title": "Kisgép-kölcsönző",
+    "noProducts": "Jelenleg nincs elérhető termék.",
+    "hero": {
+        "title": "Minden, ami a ház körüli munkákhoz kell.",
+        "description": "Bérelj megbízható gépeket egyszerűen, amikor valóban szükséged van rájuk.",
+        "browseProducts": "Gépek böngészése",
+        "findByTask": "Segíts a választásban"
+    },
+    "featuredProducts": {
+        "title": "Kiemelt gépek"
+    }
 }
