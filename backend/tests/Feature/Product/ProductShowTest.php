@@ -34,8 +34,8 @@ class ProductShowTest extends TestCase
                 'product.description',
                 'Professzionális betonkeverő.'
             )
-            ->assertJsonPath('product.price_per_day', 8000)
-            ->assertJsonPath('product.deposit', 30000)
+            ->assertJsonPath('product.price_per_day', '8000.00')
+            ->assertJsonPath('product.deposit', '30000.00')
             ->assertJsonPath('product.category.id', $category->id)
             ->assertJsonPath('product.category.name', $category->name);
     }
@@ -138,5 +138,100 @@ class ProductShowTest extends TestCase
             'comment' => 'Teszt vélemény.',
             'approved' => true,
         ], $attributes));
+    }
+    public function test_product_detail_returns_battery_requirements(): void
+    {
+        $batterySystem = \App\Models\BatterySystem::factory()
+            ->makita()
+            ->create();
+
+        $category = \App\Models\Category::query()->create([
+            'name' => 'Kerti gépek',
+            'description' => 'Teszt kategória',
+            'active' => true,
+        ]);
+
+        $product = \App\Models\Product::query()->create([
+            'category_id' => $category->id,
+            'name' => 'Akkumulátoros szegélynyíró',
+            'sku' => 'TEST-SZEGELYNYIRO',
+            'inventory_prefix' => 'TSZ',
+            'battery_system_id' => $batterySystem->id,
+            'required_batteries' => 2,
+            'required_chargers' => 1,
+            'description' => 'Teszt termék.',
+            'price_per_day' => 8000,
+            'deposit' => 20000,
+            'active' => true,
+        ]);
+
+        $response = $this->getJson(
+            "/api/products/{$product->id}"
+        );
+
+        $response
+            ->assertOk()
+            ->assertJsonPath(
+                'product.battery_system.id',
+                $batterySystem->id
+            )
+            ->assertJsonPath(
+                'product.battery_system.manufacturer',
+                'Makita'
+            )
+            ->assertJsonPath(
+                'product.battery_system.name',
+                'LXT 18V'
+            )
+            ->assertJsonPath(
+                'product.battery_system.voltage',
+                '18.00'
+            )
+            ->assertJsonPath(
+                'product.required_batteries',
+                2
+            )
+            ->assertJsonPath(
+                'product.required_chargers',
+                1
+            );
+    }
+    public function test_product_detail_returns_no_battery_system_for_non_battery_product(): void
+    {
+        $category = \App\Models\Category::query()->create([
+            'name' => 'Kerti gépek',
+            'description' => 'Teszt kategória',
+            'active' => true,
+        ]);
+
+        $product = \App\Models\Product::query()->create([
+            'category_id' => $category->id,
+            'name' => 'Benzines fűnyíró',
+            'sku' => 'TEST-FUNYIRO',
+            'inventory_prefix' => 'TFU',
+            'description' => 'Teszt termék.',
+            'price_per_day' => 6000,
+            'deposit' => 10000,
+            'active' => true,
+        ]);
+
+        $response = $this->getJson(
+            "/api/products/{$product->id}"
+        );
+
+        $response
+            ->assertOk()
+            ->assertJsonPath(
+                'product.battery_system',
+                null
+            )
+            ->assertJsonPath(
+                'product.required_batteries',
+                0
+            )
+            ->assertJsonPath(
+                'product.required_chargers',
+                0
+            );
     }
 }

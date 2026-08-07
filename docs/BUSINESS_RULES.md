@@ -148,3 +148,10 @@ Például:
 * céges ügyfelek;
 * mobilalkalmazás;
 * QR-kódos munkafolyamatok.
+
+
+Az akkumulátoros gépekhez szükséges akkumulátorok és töltők automatikusan a bérlés részét képezik. Az ügyfél ezeket nem választja külön. A termék meghatározza a szükséges akkumulátorrendszert és mennyiséget, a konkrét akkumulátor- és töltőpéldányokat pedig az admin a tényleges kiadáskor rendeli hozzá. Egy kompatibilis akkumulátor vagy töltő nincs fixen egy géphez kötve, több azonos rendszerű gép között szabadon használható.
+
+BR – Product és Inventory szétválasztása: A Product a bérelhető terméktípust írja le, minden fizikai géppéldány külön InventoryItem. Minden InventoryItem saját azonosítóval, sorozatszámmal, státusszal és teljes előélettel rendelkezik.
+
+BR – Adminból kezelhető működés: A vállalkozás normál napi működéséhez szükséges adatmódosításokat az adminfelületről kell elvégezni. Új termék, új géppéldány, ár, kaució, státusz, kép és más üzleti adat módosítása nem igényelhet kódmódosítást.

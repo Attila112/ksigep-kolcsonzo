@@ -15,9 +15,13 @@ class Product extends Model
         'sku',
         'inventory_prefix',
         'description',
+        'image_path',
         'price_per_day',
         'deposit',
         'active',
+        'battery_system_id',
+        'required_batteries',
+        'required_chargers',
     ];
 
     public function category(): BelongsTo
@@ -41,5 +45,19 @@ class Product extends Model
     {
         return $this->belongsToMany(WorkType::class)
             ->withTimestamps();
+    }
+    public function batterySystem(): BelongsTo
+    {
+        return $this->belongsTo(BatterySystem::class);
+    }
+    protected function casts(): array
+    {
+        return [
+            'price_per_day' => 'decimal:2',
+            'deposit' => 'decimal:2',
+            'active' => 'boolean',
+            'required_batteries' => 'integer',
+            'required_chargers' => 'integer',
+        ];
     }
 }

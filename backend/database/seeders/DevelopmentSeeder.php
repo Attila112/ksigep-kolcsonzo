@@ -10,9 +10,11 @@ class DevelopmentSeeder extends Seeder
     {
         $this->call([
             CategorySeeder::class,
+            BatterySystemSeeder::class,
             ProductSeeder::class,
             WorkTypeSeeder::class,
             InventorySeeder::class,
+            BatteryItemSeeder::class,
         ]);
     }
 }

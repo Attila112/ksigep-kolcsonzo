@@ -17,10 +17,17 @@ return [
         'name' => 'Akkumulátoros szegélynyíró',
         'sku' => 'SZEGELYNYIRO-AKKU',
         'inventory_prefix' => 'ASZ',
-        'description' => 'Akkumulátoros szegélynyíró 2 akkumulátorral és töltővel.',
+        'description' => 'Akkumulátoros szegélynyíró ház körüli és kerti használatra.',
         'price_per_day' => 8000,
         'deposit' => 20000,
         'inventory_quantity' => 1,
+
+        'battery_system' => [
+            'manufacturer' => 'Makita',
+            'name' => 'LXT 18V',
+        ],
+        'required_batteries' => 2,
+        'required_chargers' => 1,
     ],
 
     [
@@ -116,10 +123,17 @@ return [
         'name' => 'Akkumulátoros fúró-csavarozó',
         'sku' => 'FURO-CSAVAROZO-AKKU',
         'inventory_prefix' => 'AFU',
-        'description' => 'Akkumulátoros fúró-csavarozó 2 akkumulátorral és töltővel.',
+        'description' => 'Akkumulátoros fúró-csavarozó ház körüli szerelési és barkácsmunkákhoz.',
         'price_per_day' => 4000,
         'deposit' => 10000,
         'inventory_quantity' => 2,
+
+        'battery_system' => [
+            'manufacturer' => 'Makita',
+            'name' => 'LXT 18V',
+        ],
+        'required_batteries' => 2,
+        'required_chargers' => 1,
     ],
 
     [
@@ -160,10 +174,17 @@ return [
         'name' => 'Akkumulátoros sarokcsiszoló',
         'sku' => 'SAROKCSISZOLO-AKKU',
         'inventory_prefix' => 'ASC',
-        'description' => 'Akkumulátoros sarokcsiszoló akkumulátorral és töltővel.',
+        'description' => 'Akkumulátoros sarokcsiszoló ház körüli és barkácsmunkákhoz.',
         'price_per_day' => 5000,
         'deposit' => 10000,
         'inventory_quantity' => 1,
+
+        'battery_system' => [
+            'manufacturer' => 'Parkside',
+            'name' => 'X20V Team',
+        ],
+        'required_batteries' => 1,
+        'required_chargers' => 1,
     ],
 
     [

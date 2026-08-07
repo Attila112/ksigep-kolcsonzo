@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
-use Illuminate\Http\JsonResponse;
 use App\Http\Requests\ProductAvailabilityRequest;
+use App\Models\Product;
 use App\Services\BookingAvailabilityService;
+use Illuminate\Http\JsonResponse;
 
 class ProductController extends Controller
 {
@@ -35,6 +35,7 @@ class ProductController extends Controller
             'products' => $products,
         ]);
     }
+
     public function show(Product $product): JsonResponse
     {
         if (
@@ -44,7 +45,10 @@ class ProductController extends Controller
             abort(404);
         }
 
-        $product->load('category:id,name');
+        $product->load([
+            'category:id,name',
+            'batterySystem:id,name,manufacturer,voltage',
+        ]);
 
         $product->loadCount([
             'reviews as reviews_count' => function ($query) {
@@ -62,6 +66,7 @@ class ProductController extends Controller
             'product' => $product,
         ]);
     }
+
     /**
      * Returns the available quantity of a product
      * for the requested rental period.

@@ -6,5 +6,15 @@
   "catalog": {
     "title": "Gépek böngészése",
     "description": "Böngéssz az elérhető gépek között, és válaszd ki azt, amelyikre a munkádhoz szükséged van."
+  },
+  "details": {
+    "dailyPrice": "Napi díj",
+    "deposit": "Kaució",
+    "reviews": "Értékelések",
+    "packageContents": "A csomag tartalma",
+    "batterySystem": "Akkumulátorrendszer",
+    "battery": "akkumulátor",
+    "charger": "töltő",
+    "included": "A bérlés tartalmazza"
   }
 }
