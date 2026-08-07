@@ -2,5 +2,9 @@
   "dailyPrice": "Napi díj",
   "deposit": "Kaució",
   "noReviews": "Még nincs értékelés",
-  "rating": "{rating} / 5 ({count} értékelés)"
+  "rating": "{rating} / 5 ({count} értékelés)",
+  "catalog": {
+    "title": "Gépek böngészése",
+    "description": "Böngéssz az elérhető gépek között, és válaszd ki azt, amelyikre a munkádhoz szükséged van."
+  }
 }

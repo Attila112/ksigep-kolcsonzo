@@ -13,5 +13,8 @@
   },
   "featuredProducts": {
     "title": "Kiemelt gépek"
+  },
+  "workTypeDetails": {
+    "recommendedProducts": "Ajánlott gépek"
   }
 }

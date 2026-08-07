@@ -29,3 +29,141 @@
 
 ## 9.otletek
 1. MInden otletet szivesen meghallgatok mert en sem tudok meg sok mindent. 
+
+
+# Gepek
+1. Benzines funyiro
+    - Kerti gepek
+    - kb 5-6 ezer per nap
+    - kaucio: 10 ezer 
+    - jelenleg egy darab van belole
+    - nincs tartozek
+2. Akkumulatoros szegely nyiro
+    - Kerti gepek
+    - 8 ezer per nap
+    - kaucio 20 ezer
+    - egy darab van
+    - Akkumulator 2 db es tolto
+3. Vezetkes szegely nyiro
+    - Kerti gepek
+    - 4 ezer per nap
+    - kaucio: 10 ezer
+    - egy darab van
+    - lehet kerni hozza hosszabbitot esetleg
+4. Lombnyiro vezetekes
+    - Kerti gepek
+    - 6 ezer per nap
+    - kaucio 15 ezer
+    - van egy hosszabb es egy kezi is belole nem tudom hogy ezek kulon eszkozok legyenek vagy csak kulon darab
+    - hosszabbitot lehet kulon kerni hozza
+5. Fuszellozteto vezetekes
+    - Kerti gepek
+    - 4 ezer per nap
+    - kaucio 15 ezer
+    - egy darab
+    - hosszabitot lehet kerni hozza
+6. Agaprito vezetekes
+    - Kerti gepek
+    - 6 ezer per nap
+    - kaucio 20 ezer
+    - egy darab
+    - hosszabitot lehet hozza kerni
+7. Karpittisztito
+    - Takarito gepek, auto takaritas
+    - 5 ezer per nap
+    - kaucio 15 ezer
+    - egy darab
+    - nincs egyeb
+8. Magasnyomasu moso
+    - Takarito, auto takaritas
+    - 8 ezer per nap
+    - kaucio: 15 ezer
+    - egy darab
+    - vannak hozza kiegeszitok de azok jarnak hozza
+9. Polirozo gep
+    - Autotakaritas
+    - 3 ezer per nap
+    - kaucio 10 ezer
+    - egy darab
+    - kiegeszitokkel egyutt adnam oda
+10. Akkumulatoros kezi behajto / furo
+    - Epitoipari kisgepek
+    - 4 ezer per nap
+    - kaucio 10 ezer 
+    - ketto darab
+    - 2 akkumulator es tolto
+11. Vezetekes utve furo
+    - Epitoipari kisgepek
+    - 5 ezer per nap
+    - kaucio 10 ezer
+    - ketto darab
+    - hosszabito ha kell
+12. Vizes nagy teljesitmenyu porszivo
+    - Takaritas
+    - 4 ezer per nap
+    - kaucio 10 ezer
+    - egy darab
+    - nincs
+13. Talicska
+    - Epitoipari kisgepek
+    - 2 ezer per nap
+    - kaucio 10 ezer
+    - 5 darab
+    - nincs
+14. Sarokcsiszolo vezetekes
+    - Epitoipari kisgep
+    - 3 ezer per nap
+    - kaucio 10 ezer
+    - 4 darab
+    - nincs
+15. Sarokcsiszolo akkumulatoros
+    - Epitoipari kisgepek
+    - 5 ezer per nap
+    - kaucio 10 ezer
+    - 1 darab
+    - Akkumulator es tolto
+16. Vezetekes gepi gyalu (1-22 mm-ig)
+    - Epitoipari kisgep
+    - 3 ezer per nap
+    - kaucio 10 ezer
+    - 1 darab
+    - nincs
+17. Excenteres csiszolo
+    - Epitoipari kisgep
+    - 4 ezer per nap
+    - kaucio 10 ezer
+    - 1 darab
+    - nincs
+18. Vezetekes korfuresz
+    - Epitoipari kisgep
+    - 4 ezer per nap
+    - kaucio 10 ezer
+    - 1 darab
+    - nincs
+19. Gozos ablaktisztito
+    - Takaritas
+    - 4 ezer per nap
+    - kaucio 15 ezer
+    - 1 darab
+    - nincs
+20. Magas letra 3X11 fokos
+    - Epitoipari kisgep
+    - 5 ezer per nap
+    - kaucio 10 ezer
+    - 2 darab
+    - nincs
+21. Allvany 3 meteres munka tavolsaggal
+    - Epitoipari kisgep
+    - 3 ezer per nap
+    - kaucio 10 ezer
+    - 1 darab
+    - nincs
+22. Fem tarto bakok parban
+    - Epitoipari kisgep
+    - 2 ezer per nap
+    - kaucio 10 ezer
+    - 1 darab
+    - nincs
+
+
+
