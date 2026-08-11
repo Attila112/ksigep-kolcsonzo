@@ -1,1 +1,49 @@
-{}
+{
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "A kölcsönző aktuális állapotának gyors áttekintése."
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "products": "Termékek",
+    "inventory": "Inventory",
+    "batteries": "Akkumulátorok",
+    "bookings": "Foglalások",
+    "settings": "Beállítások"
+  },
+  "status": {
+    "active": "Aktív",
+    "inactive": "Inaktív"
+  },
+  "products": {
+    "title": "Termékek",
+    "description": "A kölcsönző összes termékének áttekintése.",
+    "open": "Megnyitás",
+    "columns": {
+      "image": "Kép",
+      "name": "Név",
+      "sku": "SKU",
+      "category": "Kategória",
+      "stock": "Készlet",
+      "available": "Elérhető",
+      "price": "Napi díj",
+      "status": "Állapot",
+      "action": "Művelet"
+    },
+    "stats": {
+      "activeProducts": "Aktív termékek",
+      "totalInventory": "Összes géppéldány",
+      "availableInventory": "Elérhető gépek",
+      "batteryProducts": "Akkumulátoros termékek",
+      "searchPlaceholder": "Keresés név, SKU vagy kategória alapján..."
+    },
+    "searchPlaceholder": "Keresés név, SKU vagy kategória alapján..."
+  },
+  "header": {
+    "title": "Adminisztráció",
+    "search": "Keresés",
+    "notifications": "Értesítések",
+    "logout": "Kijelentkezés",
+    "openMenu": "Menü megnyitása"
+  }
+}

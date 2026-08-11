@@ -26,6 +26,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
         inventory,
         admin,
         validation,
+        auth,
     ] = await Promise.all([
         import(`../../../messages/${locale}/common.json`),
         import(`../../../messages/${locale}/home.json`),
@@ -34,6 +35,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
         import(`../../../messages/${locale}/inventory.json`),
         import(`../../../messages/${locale}/admin.json`),
         import(`../../../messages/${locale}/validation.json`),
+        import(`../../../messages/${locale}/auth.json`)
     ]);
 
     return {
@@ -47,6 +49,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
             Inventory: inventory.default,
             Admin: admin.default,
             Validation: validation.default,
+            Auth: auth.default
         },
     };
 });

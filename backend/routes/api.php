@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Admin\InventoryItemController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Api\WorkTypeController;
+use App\Http\Controllers\Api\Admin\ProductController as AdminProductController;;
 
 
 use Illuminate\Http\Request;
@@ -92,5 +93,10 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::post(
             '/bookings/{booking}/return-items',
             [AdminBookingController::class, 'returnItems']
+        );
+
+        Route::get(
+            '/products',
+            [AdminProductController::class, 'index']
         );
     });
