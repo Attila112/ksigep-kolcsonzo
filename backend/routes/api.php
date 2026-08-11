@@ -9,7 +9,9 @@ use App\Http\Controllers\Api\Admin\InventoryItemController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Api\WorkTypeController;
-use App\Http\Controllers\Api\Admin\ProductController as AdminProductController;;
+use App\Http\Controllers\Api\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Api\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Api\Admin\BatterySystemController as AdminBatterySystemController;
 
 
 use Illuminate\Http\Request;
@@ -98,5 +100,22 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::get(
             '/products',
             [AdminProductController::class, 'index']
+        );
+        Route::get(
+            '/products/{product}',
+            [AdminProductController::class, 'show']
+        );
+        Route::patch(
+            '/products/{product}',
+            [AdminProductController::class, 'update']
+        );
+        Route::get(
+            '/categories',
+            [AdminCategoryController::class, 'index']
+        );
+
+        Route::get(
+            '/battery-systems',
+            [AdminBatterySystemController::class, 'index']
         );
     });

@@ -37,7 +37,57 @@
       "batteryProducts": "Akkumulátoros termékek",
       "searchPlaceholder": "Keresés név, SKU vagy kategória alapján..."
     },
-    "searchPlaceholder": "Keresés név, SKU vagy kategória alapján..."
+    "searchPlaceholder": "Keresés név, SKU vagy kategória alapján...",
+    "detail": {
+      "back": "Vissza a termékekhez",
+      "generalInformation": "Általános adatok",
+      "inventory": "Géppéldányok",
+      "battery": "Akkumulátorrendszer",
+      "workTypes": "Ajánlott munkák",
+      "description": "Leírás",
+      "sku": "SKU",
+      "category": "Kategória",
+      "dailyPrice": "Napi díj",
+      "deposit": "Kaució",
+      "status": "Állapot",
+      "batterySystem": "Akkumulátorrendszer",
+      "requiredBatteries": "Szükséges akkumulátor",
+      "requiredChargers": "Szükséges töltő",
+      "noBatterySystem": "A termék nem használ akkumulátorrendszert.",
+      "noInventory": "Ehhez a termékhez még nincs géppéldány.",
+      "noWorkTypes": "A termékhez nincs munkatípus hozzárendelve.",
+      "serialNumber": "Sorozatszám",
+      "inventoryCode": "Eszközkód",
+      "adminNote": "Admin megjegyzés",
+      "noSerialNumber": "Nincs megadva",
+      "noAdminNote": "Nincs megjegyzés",
+      "stats": {
+        "total": "Összes példány",
+        "available": "Elérhető",
+        "rented": "Kiadva",
+        "maintenance": "Szervizben"
+      }
+    },
+    "edit": {
+      "title": "Termék szerkesztése",
+      "open": "Szerkesztés",
+      "save": "Mentés",
+      "saving": "Mentés...",
+      "cancel": "Mégse",
+      "saveError": "A termék mentése nem sikerült.",
+      "noBatterySystem": "Nem használ akkumulátorrendszert",
+      "fields": {
+        "name": "Név",
+        "description": "Leírás",
+        "category": "Kategória",
+        "dailyPrice": "Napi díj",
+        "deposit": "Kaució",
+        "active": "Aktív termék",
+        "batterySystem": "Akkumulátorrendszer",
+        "requiredBatteries": "Szükséges akkumulátorok száma",
+        "requiredChargers": "Szükséges töltők száma"
+      }
+    }
   },
   "header": {
     "title": "Adminisztráció",
@@ -45,5 +95,13 @@
     "notifications": "Értesítések",
     "logout": "Kijelentkezés",
     "openMenu": "Menü megnyitása"
+  },
+  "inventoryStatus": {
+    "available": "Elérhető",
+    "rented": "Kiadva",
+    "inspection": "Ellenőrzés alatt",
+    "maintenance": "Szervizben",
+    "damaged": "Sérült",
+    "inactive": "Inaktív"
   }
 }

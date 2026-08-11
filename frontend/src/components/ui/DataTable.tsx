@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 type DataTableProps = {
     children: ReactNode;
+    className?: string;
 };
 
 type DataTableHeaderProps = {
@@ -28,10 +29,16 @@ type DataTableCellProps = {
 
 export function DataTable({
     children,
+    className = "",
 }: DataTableProps) {
     return (
         <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
-            <table className="w-full border-collapse text-left text-sm">
+            <table
+                className={[
+                    "w-full min-w-max border-collapse text-left text-sm",
+                    className,
+                ].join(" ")}
+            >
                 {children}
             </table>
         </div>

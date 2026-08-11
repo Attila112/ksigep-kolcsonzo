@@ -69,7 +69,7 @@ export function AdminProductRow({
                 />
             </DataTableCell>
 
-            <DataTableCell className="text-right">
+            <DataTableCell className="sticky right-0 bg-white text-right dark:bg-slate-950">
                 <ButtonLink
                     href={`/admin/products/${product.id}`}
                     variant="secondary"

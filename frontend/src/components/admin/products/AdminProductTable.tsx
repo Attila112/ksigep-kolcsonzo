@@ -35,7 +35,7 @@ export function AdminProductTable({
     labels,
 }: AdminProductTableProps) {
     return (
-        <DataTable>
+        <DataTable className="min-w-275">
             <DataTableHeader>
                 <DataTableRow>
                     <DataTableHead>{labels.columns.image}</DataTableHead>
@@ -46,7 +46,7 @@ export function AdminProductTable({
                     <DataTableHead>{labels.columns.available}</DataTableHead>
                     <DataTableHead>{labels.columns.price}</DataTableHead>
                     <DataTableHead>{labels.columns.status}</DataTableHead>
-                    <DataTableHead className="text-right">
+                    <DataTableHead className="sticky right-0 bg-slate-50 text-right dark:bg-slate-900">
                         {labels.columns.action}
                     </DataTableHead>
                 </DataTableRow>
