@@ -103,5 +103,101 @@
     "maintenance": "Szervizben",
     "damaged": "Sérült",
     "inactive": "Inaktív"
+  },
+  "inventory": {
+    "title": "Géppéldányok",
+    "description": "A kölcsönző összes fizikai géppéldányának áttekintése.",
+    "open": "Megnyitás",
+    "noSerialNumber": "Nincs megadva",
+    "noAdminNote": "Nincs megjegyzés",
+    "empty": "Még nincs géppéldány a rendszerben.",
+    "stats": {
+      "total": "Összes géppéldány",
+      "available": "Elérhető",
+      "rented": "Kiadva",
+      "attention": "Figyelmet igényel"
+    },
+    "columns": {
+      "inventoryCode": "Eszközkód",
+      "product": "Termék",
+      "sku": "SKU",
+      "category": "Kategória",
+      "serialNumber": "Sorozatszám",
+      "status": "Állapot",
+      "adminNote": "Admin megjegyzés",
+      "action": "Művelet"
+    },
+    "detail": {
+      "back": "Vissza a géppéldányokhoz",
+      "generalInformation": "Általános adatok",
+      "inventoryCode": "Eszközkód",
+      "serialNumber": "Sorozatszám",
+      "product": "Termék",
+      "sku": "SKU",
+      "category": "Kategória",
+      "adminNote": "Admin megjegyzés",
+      "noSerialNumber": "Nincs megadva",
+      "noAdminNote": "Nincs megjegyzés",
+      "history": "Állapottörténet",
+      "noHistory": "Ehhez a géppéldányhoz még nincs állapotváltozási előzmény.",
+      "system": "Automatikus rendszer",
+      "noHistoryNote": "Nincs megjegyzés",
+      "batterySystem": "Akkumulátorrendszer",
+      "requiredBatteries": "Szükséges akkumulátor",
+      "requiredChargers": "Szükséges töltő",
+      "noBatterySystem": "Nem használ akkumulátorrendszert"
+    },
+    "statusChange": {
+      "title": "Állapot módosítása",
+      "description": "Módosítsd a géppéldány aktuális üzemeltetési állapotát.",
+      "status": "Új állapot",
+      "adminNote": "Admin megjegyzés",
+      "adminNotePlaceholder": "Írd le röviden az állapotváltozás okát...",
+      "adminNoteRequired": "A megjegyzés megadása ehhez az állapothoz kötelező.",
+      "save": "Állapot mentése",
+      "saving": "Mentés...",
+      "saveSuccess": "Az állapot sikeresen módosítva.",
+      "saveError": "Az állapot módosítása nem sikerült."
+    }
+  },
+  "batteries": {
+    "title": "Akkumulátorok és töltők",
+    "description": "A kölcsönző akkumulátorainak és töltőinek áttekintése.",
+    "open": "Megnyitás",
+    "noSerialNumber": "Nincs megadva",
+    "empty": "Még nincs akkumulátor vagy töltő a rendszerben.",
+    "stats": {
+      "total": "Összes eszköz",
+      "batteries": "Akkumulátorok",
+      "chargers": "Töltők",
+      "available": "Elérhető"
+    },
+    "types": {
+      "battery": "Akkumulátor",
+      "charger": "Töltő"
+    },
+    "columns": {
+      "inventoryCode": "Eszközkód",
+      "type": "Típus",
+      "system": "Akkurendszer",
+      "manufacturer": "Gyártó",
+      "voltage": "Feszültség",
+      "serialNumber": "Sorozatszám",
+      "status": "Állapot",
+      "action": "Művelet"
+    },
+    "detail": {
+      "back": "Vissza az akkumulátorokhoz",
+      "generalInformation": "Általános adatok",
+      "inventoryCode": "Eszközkód",
+      "type": "Típus",
+      "batterySystem": "Akkumulátorrendszer",
+      "manufacturer": "Gyártó",
+      "voltage": "Feszültség",
+      "serialNumber": "Sorozatszám",
+      "adminNote": "Admin megjegyzés",
+      "noSerialNumber": "Nincs megadva",
+      "noAdminNote": "Nincs megjegyzés"
+    }
   }
 }

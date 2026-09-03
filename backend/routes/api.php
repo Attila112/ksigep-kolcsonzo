@@ -12,7 +12,7 @@ use App\Http\Controllers\Api\WorkTypeController;
 use App\Http\Controllers\Api\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Api\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Api\Admin\BatterySystemController as AdminBatterySystemController;
-
+use App\Http\Controllers\Api\Admin\BatteryItemController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -63,6 +63,10 @@ Route::middleware(['auth:sanctum', 'admin'])
             '/inventory-items',
             [InventoryItemController::class, 'store']
         );
+        Route::get(
+            '/inventory-items/{inventoryItem}',
+            [InventoryItemController::class, 'show']
+        );
         Route::patch(
             '/inventory-items/{inventoryItem}/status',
             [InventoryItemController::class, 'updateStatus']
@@ -71,6 +75,7 @@ Route::middleware(['auth:sanctum', 'admin'])
             '/inventory-items/{inventoryItem}/status-history',
             [InventoryItemController::class, 'statusHistory']
         );
+
 
         Route::get(
             '/bookings',
@@ -97,6 +102,7 @@ Route::middleware(['auth:sanctum', 'admin'])
             [AdminBookingController::class, 'returnItems']
         );
 
+
         Route::get(
             '/products',
             [AdminProductController::class, 'index']
@@ -109,6 +115,7 @@ Route::middleware(['auth:sanctum', 'admin'])
             '/products/{product}',
             [AdminProductController::class, 'update']
         );
+
         Route::get(
             '/categories',
             [AdminCategoryController::class, 'index']
@@ -117,5 +124,13 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::get(
             '/battery-systems',
             [AdminBatterySystemController::class, 'index']
+        );
+        Route::get(
+            '/battery-items',
+            [BatteryItemController::class, 'index']
+        );
+        Route::get(
+            '/battery-items/{batteryItem}',
+            [BatteryItemController::class, 'show']
         );
     });

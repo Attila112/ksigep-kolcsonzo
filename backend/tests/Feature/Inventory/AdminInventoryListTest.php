@@ -64,6 +64,18 @@ class AdminInventoryListTest extends TestCase
             ->assertJsonPath(
                 'inventory_items.0.product.name',
                 $product->name
+            )
+            ->assertJsonPath(
+                'inventory_items.0.product.sku',
+                $product->sku
+            )
+            ->assertJsonPath(
+                'inventory_items.0.product.category.id',
+                $product->category->id
+            )
+            ->assertJsonPath(
+                'inventory_items.0.product.category.name',
+                'Betonkeverők'
             );
     }
 
@@ -161,6 +173,8 @@ class AdminInventoryListTest extends TestCase
         return Product::query()->create([
             'category_id' => $category->id,
             'name' => 'Betonkeverő 180L',
+            'sku' => 'BETONKEVERO-180L',
+            'inventory_prefix' => 'BET',
             'description' => 'Teszt termék',
             'price_per_day' => 8000,
             'deposit' => 30000,

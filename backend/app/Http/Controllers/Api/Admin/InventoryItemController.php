@@ -15,7 +15,10 @@ class InventoryItemController extends Controller
     public function index(): JsonResponse
     {
         $inventoryItems = InventoryItem::query()
-            ->with('product:id,name')
+            ->with([
+                'product:id,category_id,name,sku',
+                'product.category:id,name',
+            ])
             ->latest()
             ->get();
 
@@ -83,6 +86,19 @@ class InventoryItemController extends Controller
                 'status' => $inventoryItem->status,
             ],
             'status_history' => $statusHistory,
+        ]);
+    }
+    public function show(
+        InventoryItem $inventoryItem
+    ): JsonResponse {
+        $inventoryItem->load([
+            'product:id,category_id,battery_system_id,name,sku,required_batteries,required_chargers',
+            'product.category:id,name',
+            'product.batterySystem:id,name,manufacturer,voltage',
+        ]);
+
+        return response()->json([
+            'inventory_item' => $inventoryItem,
         ]);
     }
 }
