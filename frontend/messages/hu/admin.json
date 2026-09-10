@@ -212,5 +212,64 @@
       "systemUser": "Rendszer",
       "historyNote": "Megjegyzés"
     }
+  },
+  "bookings": {
+    "title": "Foglalások",
+    "description": "A kölcsönző foglalásainak áttekintése.",
+    "open": "Megnyitás",
+    "empty": "Még nincs foglalás a rendszerben.",
+    "stats": {
+      "total": "Összes foglalás",
+      "pending": "Jóváhagyásra vár",
+      "active": "Aktív kölcsönzés",
+      "completed": "Lezárt foglalások"
+    },
+    "columns": {
+      "id": "Foglalás",
+      "customer": "Ügyfél",
+      "startDate": "Kezdés",
+      "endDate": "Vége",
+      "pickupType": "Átvétel módja",
+      "status": "Állapot",
+      "total": "Fizetendő",
+      "action": "Művelet"
+    },
+    "status": {
+      "pending": "Jóváhagyásra vár",
+      "confirmed": "Jóváhagyva",
+      "rejected": "Elutasítva",
+      "cancelled": "Törölve",
+      "active": "Aktív kölcsönzés",
+      "completed": "Lezárva"
+    },
+    "pickupType": {
+      "selfPickup": "Személyes átvétel",
+      "delivery": "Házhoz szállítás"
+    },
+    "detail": {
+      "back": "Vissza a foglalásokhoz",
+      "booking": "Foglalás",
+      "generalInformation": "Foglalási adatok",
+      "customerName": "Ügyfél neve",
+      "customerEmail": "E-mail cím",
+      "customerPhone": "Telefonszám",
+      "startDate": "Kölcsönzés kezdete",
+      "endDate": "Kölcsönzés vége",
+      "pickupType": "Átvétel módja",
+      "plannedPickupAt": "Tervezett átvétel",
+      "items": "Foglalt termékek",
+      "quantity": "Mennyiség",
+      "rentalDays": "Kölcsönzési napok",
+      "inventoryItem": "Eszközkód",
+      "serialNumber": "Sorozatszám",
+      "assignedAt": "Kiadás időpontja",
+      "returnedAt": "Visszavétel időpontja",
+      "accessories": "Kiadott akkumulátorok és töltők",
+      "batterySystem": "Akkumulátorrendszer",
+      "noSerialNumber": "Nincs megadva",
+      "notReturned": "Még nincs visszavéve",
+      "noAllocation": "Ehhez a termékhez még nincs konkrét géppéldány kiadva.",
+      "noValue": "Nincs megadva"
+    }
   }
 }

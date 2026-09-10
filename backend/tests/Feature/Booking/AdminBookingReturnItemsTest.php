@@ -11,6 +11,9 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use App\Models\BatteryItem;
+use App\Models\BatterySystem;
+use App\Models\BookingItemAllocationBatteryItem;
 
 class AdminBookingReturnItemsTest extends TestCase
 {
@@ -354,7 +357,613 @@ class AdminBookingReturnItemsTest extends TestCase
             ]
         )->assertNotFound();
     }
+    public function test_returning_machine_also_returns_assigned_battery_items(): void
+    {
+        $admin = $this->createAdmin();
 
+        $batterySystem = BatterySystem::query()->create([
+            'name' => 'Makita LXT',
+            'manufacturer' => 'Makita',
+            'voltage' => 18,
+            'active' => true,
+        ]);
+
+        $product = $this->createProduct([
+            'name' => 'Akkus fúrógép',
+            'battery_system_id' => $batterySystem->id,
+            'required_batteries' => 1,
+            'required_chargers' => 1,
+        ]);
+
+        $inventoryItem = $this->createInventoryItem(
+            $product,
+            'RET-AF-001',
+            [
+                'status' => 'RENTED',
+            ]
+        );
+
+        $battery = BatteryItem::factory()->create([
+            'battery_system_id' => $batterySystem->id,
+            'inventory_code' => 'RET-BAT-001',
+            'type' => BatteryItem::TYPE_BATTERY,
+            'status' => BatteryItem::STATUS_RENTED,
+        ]);
+
+        $charger = BatteryItem::factory()->create([
+            'battery_system_id' => $batterySystem->id,
+            'inventory_code' => 'RET-CHG-001',
+            'type' => BatteryItem::TYPE_CHARGER,
+            'status' => BatteryItem::STATUS_RENTED,
+        ]);
+
+        $booking = $this->createBooking([
+            'status' => 'ACTIVE',
+        ]);
+
+        $bookingItem = $booking->items()->create(
+            $this->bookingItemData($product)
+        );
+
+        $machineAllocation = BookingItemAllocation::query()->create([
+            'booking_item_id' => $bookingItem->id,
+            'inventory_item_id' => $inventoryItem->id,
+            'assigned_at' => now()->subDay(),
+            'returned_at' => null,
+        ]);
+
+        BookingItemAllocationBatteryItem::query()->create([
+            'booking_item_allocation_id' => $machineAllocation->id,
+            'battery_item_id' => $battery->id,
+            'assigned_at' => now()->subDay(),
+            'returned_at' => null,
+        ]);
+
+        BookingItemAllocationBatteryItem::query()->create([
+            'booking_item_allocation_id' => $machineAllocation->id,
+            'battery_item_id' => $charger->id,
+            'assigned_at' => now()->subDay(),
+            'returned_at' => null,
+        ]);
+
+        Sanctum::actingAs($admin);
+
+        $response = $this->postJson(
+            "/api/admin/bookings/{$booking->id}/return-items",
+            [
+                'inventory_item_ids' => [
+                    $inventoryItem->id,
+                ],
+            ]
+        );
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('battery_items', [
+            'id' => $battery->id,
+            'status' => BatteryItem::STATUS_INSPECTION,
+        ]);
+
+        $this->assertDatabaseHas('battery_items', [
+            'id' => $charger->id,
+            'status' => BatteryItem::STATUS_INSPECTION,
+        ]);
+
+        $this->assertDatabaseHas('battery_status_histories', [
+            'battery_item_id' => $battery->id,
+            'from_status' => BatteryItem::STATUS_RENTED,
+            'to_status' => BatteryItem::STATUS_INSPECTION,
+        ]);
+
+        $this->assertDatabaseHas('battery_status_histories', [
+            'battery_item_id' => $charger->id,
+            'from_status' => BatteryItem::STATUS_RENTED,
+            'to_status' => BatteryItem::STATUS_INSPECTION,
+        ]);
+    }
+
+
+    public function test_returning_machine_marks_its_battery_allocations_as_returned(): void
+    {
+        $admin = $this->createAdmin();
+
+        $batterySystem = BatterySystem::query()->create([
+            'name' => 'Makita LXT',
+            'manufacturer' => 'Makita',
+            'voltage' => 18,
+            'active' => true,
+        ]);
+
+        $product = $this->createProduct([
+            'name' => 'Akkus csavarbehajtó',
+            'battery_system_id' => $batterySystem->id,
+            'required_batteries' => 1,
+            'required_chargers' => 0,
+        ]);
+
+        $inventoryItem = $this->createInventoryItem(
+            $product,
+            'RET-AC-001',
+            [
+                'status' => 'RENTED',
+            ]
+        );
+
+        $battery = BatteryItem::factory()->create([
+            'battery_system_id' => $batterySystem->id,
+            'inventory_code' => 'RET-BAT-002',
+            'type' => BatteryItem::TYPE_BATTERY,
+            'status' => BatteryItem::STATUS_RENTED,
+        ]);
+
+        $booking = $this->createBooking([
+            'status' => 'ACTIVE',
+        ]);
+
+        $bookingItem = $booking->items()->create(
+            $this->bookingItemData($product)
+        );
+
+        $machineAllocation = BookingItemAllocation::query()->create([
+            'booking_item_id' => $bookingItem->id,
+            'inventory_item_id' => $inventoryItem->id,
+            'assigned_at' => now()->subDay(),
+            'returned_at' => null,
+        ]);
+
+        $batteryAllocation =
+            BookingItemAllocationBatteryItem::query()->create([
+                'booking_item_allocation_id' => $machineAllocation->id,
+                'battery_item_id' => $battery->id,
+                'assigned_at' => now()->subDay(),
+                'returned_at' => null,
+            ]);
+
+        Sanctum::actingAs($admin);
+
+        $response = $this->postJson(
+            "/api/admin/bookings/{$booking->id}/return-items",
+            [
+                'inventory_item_ids' => [
+                    $inventoryItem->id,
+                ],
+            ]
+        );
+
+        $response->assertOk();
+
+        $batteryAllocation->refresh();
+
+        $this->assertNotNull(
+            $batteryAllocation->returned_at
+        );
+    }
+
+
+    public function test_partial_return_only_returns_battery_items_assigned_to_returned_machine(): void
+    {
+        $admin = $this->createAdmin();
+
+        $batterySystem = BatterySystem::query()->create([
+            'name' => 'Makita LXT',
+            'manufacturer' => 'Makita',
+            'voltage' => 18,
+            'active' => true,
+        ]);
+
+        $product = $this->createProduct([
+            'name' => 'Akkus fúrógép',
+            'battery_system_id' => $batterySystem->id,
+            'required_batteries' => 1,
+            'required_chargers' => 0,
+        ]);
+
+        $inventoryItemOne = $this->createInventoryItem(
+            $product,
+            'RET-PART-001',
+            [
+                'status' => 'RENTED',
+            ]
+        );
+
+        $inventoryItemTwo = $this->createInventoryItem(
+            $product,
+            'RET-PART-002',
+            [
+                'status' => 'RENTED',
+            ]
+        );
+
+        $batteryOne = BatteryItem::factory()->create([
+            'battery_system_id' => $batterySystem->id,
+            'inventory_code' => 'RET-BAT-PART-001',
+            'type' => BatteryItem::TYPE_BATTERY,
+            'status' => BatteryItem::STATUS_RENTED,
+        ]);
+
+        $batteryTwo = BatteryItem::factory()->create([
+            'battery_system_id' => $batterySystem->id,
+            'inventory_code' => 'RET-BAT-PART-002',
+            'type' => BatteryItem::TYPE_BATTERY,
+            'status' => BatteryItem::STATUS_RENTED,
+        ]);
+
+        $booking = $this->createBooking([
+            'status' => 'ACTIVE',
+        ]);
+
+        $bookingItem = $booking->items()->create(
+            $this->bookingItemData($product, 2)
+        );
+
+        $allocationOne = BookingItemAllocation::query()->create([
+            'booking_item_id' => $bookingItem->id,
+            'inventory_item_id' => $inventoryItemOne->id,
+            'assigned_at' => now()->subDay(),
+            'returned_at' => null,
+        ]);
+
+        $allocationTwo = BookingItemAllocation::query()->create([
+            'booking_item_id' => $bookingItem->id,
+            'inventory_item_id' => $inventoryItemTwo->id,
+            'assigned_at' => now()->subDay(),
+            'returned_at' => null,
+        ]);
+
+        $batteryAllocationOne =
+            BookingItemAllocationBatteryItem::query()->create([
+                'booking_item_allocation_id' => $allocationOne->id,
+                'battery_item_id' => $batteryOne->id,
+                'assigned_at' => now()->subDay(),
+                'returned_at' => null,
+            ]);
+
+        $batteryAllocationTwo =
+            BookingItemAllocationBatteryItem::query()->create([
+                'booking_item_allocation_id' => $allocationTwo->id,
+                'battery_item_id' => $batteryTwo->id,
+                'assigned_at' => now()->subDay(),
+                'returned_at' => null,
+            ]);
+
+        Sanctum::actingAs($admin);
+
+        $response = $this->postJson(
+            "/api/admin/bookings/{$booking->id}/return-items",
+            [
+                'inventory_item_ids' => [
+                    $inventoryItemOne->id,
+                ],
+            ]
+        );
+
+        $response->assertOk();
+
+        $batteryAllocationOne->refresh();
+        $batteryAllocationTwo->refresh();
+
+        $this->assertNotNull(
+            $batteryAllocationOne->returned_at
+        );
+
+        $this->assertNull(
+            $batteryAllocationTwo->returned_at
+        );
+
+        $this->assertDatabaseHas('battery_items', [
+            'id' => $batteryOne->id,
+            'status' => BatteryItem::STATUS_INSPECTION,
+        ]);
+
+        $this->assertDatabaseHas('battery_items', [
+            'id' => $batteryTwo->id,
+            'status' => BatteryItem::STATUS_RENTED,
+        ]);
+
+        $this->assertDatabaseHas('bookings', [
+            'id' => $booking->id,
+            'status' => 'ACTIVE',
+        ]);
+    }
+
+
+    public function test_completed_booking_returns_all_assigned_battery_items(): void
+    {
+        $admin = $this->createAdmin();
+
+        $batterySystem = BatterySystem::query()->create([
+            'name' => 'Makita LXT',
+            'manufacturer' => 'Makita',
+            'voltage' => 18,
+            'active' => true,
+        ]);
+
+        $product = $this->createProduct([
+            'name' => 'Akkus sarokcsiszoló',
+            'battery_system_id' => $batterySystem->id,
+            'required_batteries' => 1,
+            'required_chargers' => 0,
+        ]);
+
+        $inventoryItem = $this->createInventoryItem(
+            $product,
+            'RET-COMPLETE-001',
+            [
+                'status' => 'RENTED',
+            ]
+        );
+
+        $battery = BatteryItem::factory()->create([
+            'battery_system_id' => $batterySystem->id,
+            'inventory_code' => 'RET-BAT-COMPLETE-001',
+            'type' => BatteryItem::TYPE_BATTERY,
+            'status' => BatteryItem::STATUS_RENTED,
+        ]);
+
+        $booking = $this->createBooking([
+            'status' => 'ACTIVE',
+        ]);
+
+        $bookingItem = $booking->items()->create(
+            $this->bookingItemData($product)
+        );
+
+        $machineAllocation = BookingItemAllocation::query()->create([
+            'booking_item_id' => $bookingItem->id,
+            'inventory_item_id' => $inventoryItem->id,
+            'assigned_at' => now()->subDay(),
+            'returned_at' => null,
+        ]);
+
+        BookingItemAllocationBatteryItem::query()->create([
+            'booking_item_allocation_id' => $machineAllocation->id,
+            'battery_item_id' => $battery->id,
+            'assigned_at' => now()->subDay(),
+            'returned_at' => null,
+        ]);
+
+        Sanctum::actingAs($admin);
+
+        $response = $this->postJson(
+            "/api/admin/bookings/{$booking->id}/return-items",
+            [
+                'inventory_item_ids' => [
+                    $inventoryItem->id,
+                ],
+            ]
+        );
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('battery_items', [
+            'id' => $battery->id,
+            'status' => BatteryItem::STATUS_INSPECTION,
+        ]);
+
+        $this->assertDatabaseHas('bookings', [
+            'id' => $booking->id,
+            'status' => 'COMPLETED',
+        ]);
+    }
+
+    public function test_returning_machine_without_battery_allocations_still_works(): void
+    {
+        $admin = $this->createAdmin();
+
+        $product = $this->createProduct([
+            'name' => 'Betonkeverő',
+            'battery_system_id' => null,
+            'required_batteries' => 0,
+            'required_chargers' => 0,
+        ]);
+
+        $inventoryItem = $this->createInventoryItem(
+            $product,
+            'RET-NOBAT-001',
+            [
+                'status' => 'RENTED',
+            ]
+        );
+
+        $booking = $this->createBooking([
+            'status' => 'ACTIVE',
+        ]);
+
+        $bookingItem = $booking->items()->create(
+            $this->bookingItemData($product)
+        );
+
+        BookingItemAllocation::query()->create([
+            'booking_item_id' => $bookingItem->id,
+            'inventory_item_id' => $inventoryItem->id,
+            'assigned_at' => now()->subDay(),
+            'returned_at' => null,
+        ]);
+
+        Sanctum::actingAs($admin);
+
+        $response = $this->postJson(
+            "/api/admin/bookings/{$booking->id}/return-items",
+            [
+                'inventory_item_ids' => [
+                    $inventoryItem->id,
+                ],
+            ]
+        );
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('inventory_items', [
+            'id' => $inventoryItem->id,
+            'status' => 'INSPECTION',
+        ]);
+
+        $this->assertDatabaseHas('bookings', [
+            'id' => $booking->id,
+            'status' => 'COMPLETED',
+        ]);
+    }
+
+
+    public function test_already_returned_battery_allocation_is_not_processed_again(): void
+    {
+        $admin = $this->createAdmin();
+
+        $batterySystem = BatterySystem::query()->create([
+            'name' => 'Makita LXT',
+            'manufacturer' => 'Makita',
+            'voltage' => 18,
+            'active' => true,
+        ]);
+
+        $product = $this->createProduct([
+            'name' => 'Akkus fúrógép',
+            'battery_system_id' => $batterySystem->id,
+            'required_batteries' => 1,
+            'required_chargers' => 0,
+        ]);
+
+        $inventoryItem = $this->createInventoryItem(
+            $product,
+            'RET-ALREADY-001',
+            [
+                'status' => 'RENTED',
+            ]
+        );
+
+        $battery = BatteryItem::factory()->create([
+            'battery_system_id' => $batterySystem->id,
+            'inventory_code' => 'RET-BAT-ALREADY-001',
+            'type' => BatteryItem::TYPE_BATTERY,
+            'status' => BatteryItem::STATUS_INSPECTION,
+        ]);
+
+        $booking = $this->createBooking([
+            'status' => 'ACTIVE',
+        ]);
+
+        $bookingItem = $booking->items()->create(
+            $this->bookingItemData($product)
+        );
+
+        $machineAllocation = BookingItemAllocation::query()->create([
+            'booking_item_id' => $bookingItem->id,
+            'inventory_item_id' => $inventoryItem->id,
+            'assigned_at' => now()->subDay(),
+            'returned_at' => null,
+        ]);
+
+        BookingItemAllocationBatteryItem::query()->create([
+            'booking_item_allocation_id' => $machineAllocation->id,
+            'battery_item_id' => $battery->id,
+            'assigned_at' => now()->subDays(2),
+            'returned_at' => now()->subDay(),
+        ]);
+
+        Sanctum::actingAs($admin);
+
+        $response = $this->postJson(
+            "/api/admin/bookings/{$booking->id}/return-items",
+            [
+                'inventory_item_ids' => [
+                    $inventoryItem->id,
+                ],
+            ]
+        );
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('battery_items', [
+            'id' => $battery->id,
+            'status' => BatteryItem::STATUS_INSPECTION,
+        ]);
+
+        $this->assertDatabaseCount(
+            'battery_status_histories',
+            0
+        );
+    }
+
+
+    public function test_battery_return_creates_exactly_one_status_history_entry(): void
+    {
+        $admin = $this->createAdmin();
+
+        $batterySystem = BatterySystem::query()->create([
+            'name' => 'Makita LXT',
+            'manufacturer' => 'Makita',
+            'voltage' => 18,
+            'active' => true,
+        ]);
+
+        $product = $this->createProduct([
+            'name' => 'Akkus csavarbehajtó',
+            'battery_system_id' => $batterySystem->id,
+            'required_batteries' => 1,
+            'required_chargers' => 0,
+        ]);
+
+        $inventoryItem = $this->createInventoryItem(
+            $product,
+            'RET-HIST-001',
+            [
+                'status' => 'RENTED',
+            ]
+        );
+
+        $battery = BatteryItem::factory()->create([
+            'battery_system_id' => $batterySystem->id,
+            'inventory_code' => 'RET-BAT-HIST-001',
+            'type' => BatteryItem::TYPE_BATTERY,
+            'status' => BatteryItem::STATUS_RENTED,
+        ]);
+
+        $booking = $this->createBooking([
+            'status' => 'ACTIVE',
+        ]);
+
+        $bookingItem = $booking->items()->create(
+            $this->bookingItemData($product)
+        );
+
+        $machineAllocation = BookingItemAllocation::query()->create([
+            'booking_item_id' => $bookingItem->id,
+            'inventory_item_id' => $inventoryItem->id,
+            'assigned_at' => now()->subDay(),
+            'returned_at' => null,
+        ]);
+
+        BookingItemAllocationBatteryItem::query()->create([
+            'booking_item_allocation_id' => $machineAllocation->id,
+            'battery_item_id' => $battery->id,
+            'assigned_at' => now()->subDay(),
+            'returned_at' => null,
+        ]);
+
+        Sanctum::actingAs($admin);
+
+        $response = $this->postJson(
+            "/api/admin/bookings/{$booking->id}/return-items",
+            [
+                'inventory_item_ids' => [
+                    $inventoryItem->id,
+                ],
+            ]
+        );
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('battery_status_histories', [
+            'battery_item_id' => $battery->id,
+            'from_status' => BatteryItem::STATUS_RENTED,
+            'to_status' => BatteryItem::STATUS_INSPECTION,
+        ]);
+
+        $this->assertDatabaseCount(
+            'battery_status_histories',
+            1
+        );
+    }
     private function createAdmin(): User
     {
         return User::factory()->create([
@@ -437,5 +1046,18 @@ class AdminBookingReturnItemsTest extends TestCase
             'deposit_subtotal' =>
             (float) $product->deposit * $quantity,
         ];
+    }
+    private function createBooking(array $attributes = []): Booking
+    {
+        return Booking::query()->create(array_merge([
+            'customer_name' => 'Teszt Elek',
+            'customer_email' => 'teszt@example.com',
+            'customer_phone' => '+36301234567',
+            'start_date' => '2026-08-10',
+            'end_date' => '2026-08-12',
+            'pickup_type' => 'SELF_PICKUP',
+            'planned_pickup_at' => '2026-08-10 09:00:00',
+            'status' => 'ACTIVE',
+        ], $attributes));
     }
 }

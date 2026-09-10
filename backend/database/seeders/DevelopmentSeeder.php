@@ -16,6 +16,7 @@ class DevelopmentSeeder extends Seeder
             InventorySeeder::class,
             BatteryItemSeeder::class,
             DevelopmentUserSeeder::class,
+            BookingSeeder::class,
         ]);
     }
 }

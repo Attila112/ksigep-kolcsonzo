@@ -39,4 +39,10 @@ class BatteryItem extends Model
             BatteryStatusHistory::class
         );
     }
+    public function bookingAllocations(): HasMany
+    {
+        return $this->hasMany(
+            BookingItemAllocationBatteryItem::class
+        );
+    }
 }

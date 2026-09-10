@@ -7,6 +7,9 @@ use App\Models\BookingItemAllocation;
 use App\Models\InventoryStatusHistory;
 use DomainException;
 use Illuminate\Support\Facades\DB;
+use App\Models\BatteryItem;
+use App\Models\BatteryStatusHistory;
+use App\Models\BookingItemAllocationBatteryItem;
 
 class BookingReturnService
 {
@@ -43,7 +46,7 @@ class BookingReturnService
                 ->whereIn('inventory_item_id', $inventoryItemIds)
                 ->whereHas(
                     'bookingItem',
-                    fn ($query) => $query->where(
+                    fn($query) => $query->where(
                         'booking_id',
                         $booking->id
                     )
@@ -63,8 +66,8 @@ class BookingReturnService
             }
 
             if ($allocations->contains(
-                fn (BookingItemAllocation $allocation): bool =>
-                    $allocation->returned_at !== null
+                fn(BookingItemAllocation $allocation): bool =>
+                $allocation->returned_at !== null
             )) {
                 throw new DomainException(
                     'A kiválasztott gépek egyike már visszavételre került.'
@@ -72,12 +75,13 @@ class BookingReturnService
             }
 
             foreach ($allocations as $allocation) {
-                $inventoryItem = $allocation->inventoryItem;
-                $previousStatus = $inventoryItem->status;
-
                 $allocation->update([
                     'returned_at' => now(),
                 ]);
+
+                $inventoryItem = $allocation->inventoryItem;
+
+                $previousStatus = $inventoryItem->status;
 
                 $inventoryItem->update([
                     'status' => 'INSPECTION',
@@ -89,8 +93,42 @@ class BookingReturnService
                     'from_status' => $previousStatus,
                     'to_status' => 'INSPECTION',
                     'note' =>
-                        'Automatikus státuszváltás gépvisszavételkor.',
+                    'Automatikus státuszváltás gépvisszavételkor.',
                 ]);
+
+                $batteryAllocations =
+                    BookingItemAllocationBatteryItem::query()
+                    ->where(
+                        'booking_item_allocation_id',
+                        $allocation->id
+                    )
+                    ->whereNull('returned_at')
+                    ->with('batteryItem')
+                    ->lockForUpdate()
+                    ->get();
+
+                foreach ($batteryAllocations as $batteryAllocation) {
+                    $batteryItem = $batteryAllocation->batteryItem;
+
+                    $batteryAllocation->update([
+                        'returned_at' => now(),
+                    ]);
+
+                    $previousBatteryStatus = $batteryItem->status;
+
+                    $batteryItem->update([
+                        'status' => BatteryItem::STATUS_INSPECTION,
+                    ]);
+
+                    BatteryStatusHistory::query()->create([
+                        'battery_item_id' => $batteryItem->id,
+                        'changed_by_user_id' => null,
+                        'from_status' => $previousBatteryStatus,
+                        'to_status' => BatteryItem::STATUS_INSPECTION,
+                        'note' =>
+                        'Automatikus státuszváltás akkumulátor vagy töltő visszavételekor.',
+                    ]);
+                }
             }
 
             /*
@@ -100,7 +138,7 @@ class BookingReturnService
             $hasUnreturnedAllocations = BookingItemAllocation::query()
                 ->whereHas(
                     'bookingItem',
-                    fn ($query) => $query->where(
+                    fn($query) => $query->where(
                         'booking_id',
                         $booking->id
                     )
@@ -117,6 +155,7 @@ class BookingReturnService
             return $booking->fresh([
                 'items.product',
                 'items.allocations.inventoryItem',
+                'items.allocations.batteryItemAllocations.batteryItem.batterySystem',
             ]);
         });
     }

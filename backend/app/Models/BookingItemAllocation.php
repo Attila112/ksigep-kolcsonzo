@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BookingItemAllocation extends Model
 {
@@ -36,5 +37,11 @@ class BookingItemAllocation extends Model
     public function inventoryItem(): BelongsTo
     {
         return $this->belongsTo(InventoryItem::class);
+    }
+    public function batteryItemAllocations(): HasMany
+    {
+        return $this->hasMany(
+            BookingItemAllocationBatteryItem::class
+        );
     }
 }

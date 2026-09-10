@@ -87,6 +87,7 @@ class BookingController extends Controller
             $booking = $issueService->issue(
                 booking: $booking,
                 inventoryItemIds: $request->validated('inventory_item_ids'),
+                batteryAllocations: $request->validated('battery_allocations') ?? [],
             );
         } catch (DomainException $exception) {
             return response()->json([
@@ -141,6 +142,7 @@ class BookingController extends Controller
             'user:id,name,email',
             'items.product:id,name',
             'items.allocations.inventoryItem:id,product_id,inventory_code,serial_number,status,admin_note',
+            'items.allocations.batteryItemAllocations.batteryItem.batterySystem',
         ]);
 
         return response()->json([
