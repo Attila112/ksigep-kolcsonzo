@@ -6,6 +6,11 @@ import {
 import { AdminBookingGeneralCard } from "@/components/admin/bookings/detail/AdminBookingGeneralCard";
 import { AdminBookingHeader } from "@/components/admin/bookings/detail/AdminBookingHeader";
 import { AdminBookingItems } from "@/components/admin/bookings/detail/AdminBookingItems";
+import { AdminBookingApprovalActions } from "@/components/admin/bookings/detail/AdminBookingApprovalActions";
+import { AdminBookingIssueActions } from "@/components/admin/bookings/detail/AdminBookingIssueActions";
+
+import { getAdminBatteryItems } from "@/services/adminBatteryService";
+import { getAdminInventoryItems } from "@/services/adminInventoryService";
 
 import { getAdminBooking } from "@/services/adminBookingService";
 
@@ -36,6 +41,21 @@ export default async function AdminBookingDetailPage({
     } = await getAdminBooking(
         bookingIdNumber
     );
+    const issueResources =
+        booking.status === "CONFIRMED"
+            ? await Promise.all([
+                getAdminInventoryItems(),
+                getAdminBatteryItems(),
+            ])
+            : null;
+
+    const inventoryItems =
+        issueResources?.[0]
+            .inventory_items ?? [];
+
+    const batteryItems =
+        issueResources?.[1]
+            .battery_items ?? [];
 
     const bookingStatusLabels = {
         PENDING: t(
@@ -134,7 +154,133 @@ export default async function AdminBookingDetailPage({
                         ),
                     }}
                 />
+                <AdminBookingApprovalActions
+                    bookingId={booking.id}
+                    status={booking.status}
+                    labels={{
+                        title: t(
+                            "bookings.detail.approval.title"
+                        ),
+                        description: t(
+                            "bookings.detail.approval.description"
+                        ),
 
+                        approve: t(
+                            "bookings.detail.approval.approve"
+                        ),
+                        approving: t(
+                            "bookings.detail.approval.approving"
+                        ),
+
+                        rejectReason: t(
+                            "bookings.detail.approval.rejectReason"
+                        ),
+                        rejectReasonPlaceholder: t(
+                            "bookings.detail.approval.rejectReasonPlaceholder"
+                        ),
+
+                        reject: t(
+                            "bookings.detail.approval.reject"
+                        ),
+                        rejecting: t(
+                            "bookings.detail.approval.rejecting"
+                        ),
+
+                        reasonRequired: t(
+                            "bookings.detail.approval.reasonRequired"
+                        ),
+
+                        approveSuccess: t(
+                            "bookings.detail.approval.approveSuccess"
+                        ),
+                        rejectSuccess: t(
+                            "bookings.detail.approval.rejectSuccess"
+                        ),
+
+                        unknownError: t(
+                            "bookings.detail.approval.unknownError"
+                        ),
+                    }}
+                />
+                <AdminBookingIssueActions
+                    bookingId={booking.id}
+                    status={booking.status}
+                    items={booking.items}
+                    inventoryItems={
+                        inventoryItems
+                    }
+                    batteryItems={
+                        batteryItems
+                    }
+                    labels={{
+                        title: t(
+                            "bookings.detail.issue.title"
+                        ),
+                        description: t(
+                            "bookings.detail.issue.description"
+                        ),
+                        product: t(
+                            "bookings.detail.issue.product"
+                        ),
+                        machine: t(
+                            "bookings.detail.issue.machine"
+                        ),
+                        machineNumber: t(
+                            "bookings.detail.issue.machineNumber"
+                        ),
+                        selectMachine: t(
+                            "bookings.detail.issue.selectMachine"
+                        ),
+                        noMachineAvailable: t(
+                            "bookings.detail.issue.noMachineAvailable"
+                        ),
+                        accessories: t(
+                            "bookings.detail.issue.accessories"
+                        ),
+                        batteries: t(
+                            "bookings.detail.issue.batteries"
+                        ),
+                        chargers: t(
+                            "bookings.detail.issue.chargers"
+                        ),
+                        required: t(
+                            "bookings.detail.issue.required"
+                        ),
+                        selected: t(
+                            "bookings.detail.issue.selected"
+                        ),
+                        noBatteryRequired: t(
+                            "bookings.detail.issue.noBatteryRequired"
+                        ),
+                        noBatteryAvailable: t(
+                            "bookings.detail.issue.noBatteryAvailable"
+                        ),
+                        noChargerAvailable: t(
+                            "bookings.detail.issue.noChargerAvailable"
+                        ),
+                        issue: t(
+                            "bookings.detail.issue.issue"
+                        ),
+                        issuing: t(
+                            "bookings.detail.issue.issuing"
+                        ),
+                        machineRequired: t(
+                            "bookings.detail.issue.machineRequired"
+                        ),
+                        duplicateMachine: t(
+                            "bookings.detail.issue.duplicateMachine"
+                        ),
+                        accessoryRequirementInvalid: t(
+                            "bookings.detail.issue.accessoryRequirementInvalid"
+                        ),
+                        success: t(
+                            "bookings.detail.issue.success"
+                        ),
+                        unknownError: t(
+                            "bookings.detail.issue.unknownError"
+                        ),
+                    }}
+                />
                 <AdminBookingItems
                     items={booking.items}
                     labels={{
@@ -180,7 +326,7 @@ export default async function AdminBookingDetailPage({
                         noAllocation: t(
                             "bookings.detail.noAllocation"
                         ),
-                        statuses:   inventoryStatusLabels,
+                        statuses: inventoryStatusLabels,
                     }}
                 />
             </div>

@@ -31,9 +31,12 @@ class BookingAvailabilityService
             );
         }
 
-        $availableInventoryQuantity = $product
+        $rentableInventoryQuantity = $product
             ->inventoryItems()
-            ->where('status', 'AVAILABLE')
+            ->whereIn('status', [
+                'AVAILABLE',
+                'RENTED',
+            ])
             ->count();
 
         $reservedQuantity = BookingItem::query()
@@ -60,7 +63,7 @@ class BookingAvailabilityService
 
         return max(
             0,
-            $availableInventoryQuantity - $reservedQuantity
+            $rentableInventoryQuantity - $reservedQuantity
         );
     }
 }

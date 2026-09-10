@@ -16,8 +16,9 @@ class InventoryItemController extends Controller
     {
         $inventoryItems = InventoryItem::query()
             ->with([
-                'product:id,category_id,name,sku',
+                'product:id,category_id,battery_system_id,name,sku,required_batteries,required_chargers',
                 'product.category:id,name',
+                'product.batterySystem:id,name,manufacturer,voltage',
             ])
             ->latest()
             ->get();

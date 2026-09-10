@@ -269,7 +269,45 @@
       "noSerialNumber": "Nincs megadva",
       "notReturned": "Még nincs visszavéve",
       "noAllocation": "Ehhez a termékhez még nincs konkrét géppéldány kiadva.",
-      "noValue": "Nincs megadva"
+      "noValue": "Nincs megadva",
+      "approval": {
+        "title": "Foglalás elbírálása",
+        "description": "A foglalás jóváhagyása előtt a rendszer ismét ellenőrzi az eszközök elérhetőségét.",
+        "approve": "Foglalás jóváhagyása",
+        "approving": "Jóváhagyás...",
+        "rejectReason": "Elutasítás indoka",
+        "rejectReasonPlaceholder": "Add meg, hogy miért kerül elutasításra a foglalás.",
+        "reject": "Foglalás elutasítása",
+        "rejecting": "Elutasítás...",
+        "reasonRequired": "Az elutasítás indokának megadása kötelező.",
+        "approveSuccess": "A foglalás sikeresen jóváhagyva.",
+        "rejectSuccess": "A foglalás sikeresen elutasítva.",
+        "unknownError": "Váratlan hiba történt. Próbáld újra."
+      },
+      "issue": {
+        "title": "Foglalás kiadása",
+        "description": "Válaszd ki a foglaláshoz kiadandó konkrét gépeket, valamint szükség esetén az akkumulátorokat és töltőket.",
+        "product": "Termék",
+        "machine": "Géppéldány",
+        "machineNumber": "Gép",
+        "selectMachine": "Válassz gépet",
+        "noMachineAvailable": "Ehhez a termékhez jelenleg nincs kiadható géppéldány.",
+        "accessories": "Akkumulátorok és töltők",
+        "batteries": "Akkumulátorok",
+        "chargers": "Töltők",
+        "required": "Szükséges",
+        "selected": "Kiválasztva",
+        "noBatteryRequired": "Ehhez a géphez nem szükséges akkumulátor vagy töltő kiválasztása.",
+        "noBatteryAvailable": "Nincs elérhető kompatibilis akkumulátor.",
+        "noChargerAvailable": "Nincs elérhető kompatibilis töltő.",
+        "issue": "Foglalás kiadása",
+        "issuing": "Kiadás folyamatban...",
+        "machineRequired": "Minden lefoglalt darabhoz ki kell választani egy konkrét géppéldányt.",
+        "duplicateMachine": "Ugyanaz a géppéldány nem választható ki több alkalommal.",
+        "accessoryRequirementInvalid": "Minden géphez pontosan a szükséges számú akkumulátort és töltőt kell kiválasztani.",
+        "success": "A foglalás sikeresen kiadásra került.",
+        "unknownError": "Váratlan hiba történt a foglalás kiadásakor."
+      }
     }
   }
 }

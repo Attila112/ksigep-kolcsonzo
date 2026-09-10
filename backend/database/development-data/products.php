@@ -20,7 +20,7 @@ return [
         'description' => 'Akkumulátoros szegélynyíró ház körüli és kerti használatra.',
         'price_per_day' => 8000,
         'deposit' => 20000,
-        'inventory_quantity' => 1,
+        'inventory_quantity' => 3,
 
         'battery_system' => [
             'manufacturer' => 'Makita',

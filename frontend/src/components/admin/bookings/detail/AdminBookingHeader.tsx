@@ -1,3 +1,4 @@
+import { BookingStatusBadge } from "@/components/admin/bookings/BookingStatusBadge";
 import { Link } from "@/core/i18n/navigation";
 
 import type {
@@ -37,8 +38,15 @@ export function AdminBookingHeader({
                 </h1>
             </div>
 
-            <div className="self-start rounded-full border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 dark:border-slate-800 dark:text-slate-200">
-                {labels.statuses[status]}
+            <div className="self-start">
+                <BookingStatusBadge
+                    status={status}
+                    label={
+                        labels.statuses[
+                            status
+                        ]
+                    }
+                />
             </div>
         </div>
     );

@@ -233,4 +233,43 @@ class BookingAvailabilityServiceTest extends TestCase
 
         $this->assertSame(2, $availableQuantity);
     }
+    public function test_rented_inventory_item_is_counted_for_non_overlapping_future_period(): void
+    {
+        $product = $this->createProduct();
+
+        InventoryItem::query()->create([
+            'product_id' => $product->id,
+            'inventory_code' => 'BM-RENTED',
+            'serial_number' => null,
+            'status' => 'RENTED',
+            'admin_note' => null,
+        ]);
+
+        $booking = $this->createBooking([
+            'start_date' => '2026-08-10',
+            'end_date' => '2026-08-12',
+            'status' => 'ACTIVE',
+        ]);
+
+        $booking->items()->create([
+            'product_id' => $product->id,
+            'inventory_item_id' => null,
+            'quantity' => 1,
+            'price_per_day' => 8000,
+            'deposit_per_item' => 30000,
+            'rental_days' => 3,
+            'rental_subtotal' => 24000,
+            'deposit_subtotal' => 30000,
+        ]);
+
+        $service = new BookingAvailabilityService();
+
+        $availableQuantity = $service->availableQuantity(
+            product: $product,
+            startDate: '2026-09-10',
+            endDate: '2026-09-12',
+        );
+
+        $this->assertSame(1, $availableQuantity);
+    }
 }

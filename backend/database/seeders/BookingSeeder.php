@@ -18,15 +18,18 @@ class BookingSeeder extends Seeder
     {
         DB::transaction(function (): void {
             /*
-             * Korábban létrehozott development demo booking törlése.
+             * Korábban létrehozott development demo bookingok törlése.
              *
              * Így a seeder többször is biztonságosan futtatható,
              * és nem halmozódnak a tesztfoglalások.
              */
             Booking::query()
-                ->where(
+                ->whereIn(
                     'customer_email',
-                    'booking-demo@example.com'
+                    [
+                        'booking-demo@example.com',
+                        'booking-pending@example.com',
+                    ]
                 )
                 ->delete();
 
@@ -58,6 +61,12 @@ class BookingSeeder extends Seeder
                     . 'amelyhez akkumulátor és töltő is szükséges.'
                 );
             }
+
+            /*
+             * ==========================================================
+             * ACTIVE DEMO BOOKING
+             * ==========================================================
+             */
 
             /*
              * Keresünk hozzá egy szabad fizikai géppéldányt.
@@ -146,12 +155,12 @@ class BookingSeeder extends Seeder
             }
 
             /*
-             * Háromnapos demo foglalás.
+             * Háromnapos ACTIVE demo foglalás.
              *
-             * Azért CONFIRMED állapotban hozzuk létre,
+             * Először CONFIRMED állapotban hozzuk létre,
              * mert innen adható ki a BookingIssueService segítségével.
              */
-            $booking = Booking::query()->create([
+            $activeBooking = Booking::query()->create([
                 'user_id' => null,
 
                 'customer_name' =>
@@ -182,7 +191,7 @@ class BookingSeeder extends Seeder
                     'CONFIRMED',
 
                 'customer_note' =>
-                    'Development demo foglalás.',
+                    'Development ACTIVE demo foglalás.',
 
                 'admin_note' =>
                     null,
@@ -195,12 +204,15 @@ class BookingSeeder extends Seeder
              */
             $rentalDays = 3;
 
-            $pricePerDay = (float) $product->price_per_day;
-            $depositPerItem = (float) $product->deposit;
+            $pricePerDay =
+                (float) $product->price_per_day;
 
-            $bookingItem = BookingItem::query()->create([
+            $depositPerItem =
+                (float) $product->deposit;
+
+            BookingItem::query()->create([
                 'booking_id' =>
-                    $booking->id,
+                    $activeBooking->id,
 
                 'product_id' =>
                     $product->id,
@@ -258,7 +270,7 @@ class BookingSeeder extends Seeder
             );
 
             $bookingIssueService->issue(
-                booking: $booking,
+                booking: $activeBooking,
                 inventoryItemIds: [
                     $inventoryItem->id,
                 ],
@@ -273,8 +285,94 @@ class BookingSeeder extends Seeder
                 ],
             );
 
+            /*
+             * ==========================================================
+             * PENDING DEMO BOOKING
+             * ==========================================================
+             *
+             * Ezt szándékosan nem adjuk ki és nem hagyjuk jóvá.
+             * Az admin approval/rejection frontend tesztelésére szolgál.
+             */
+
+            $pendingBooking = Booking::query()->create([
+                'user_id' => null,
+
+                'customer_name' =>
+                    'Jóváhagyásra Váró Ügyfél',
+
+                'customer_email' =>
+                    'booking-pending@example.com',
+
+                'customer_phone' =>
+                    '+36309876543',
+
+                'start_date' =>
+                    now()
+                        ->addDays(30)
+                        ->toDateString(),
+
+                'end_date' =>
+                    now()
+                        ->addDays(32)
+                        ->toDateString(),
+
+                'pickup_type' =>
+                    'SELF_PICKUP',
+
+                'planned_pickup_at' =>
+                    now()
+                        ->addDays(30)
+                        ->setTime(10, 0),
+
+                'status' =>
+                    'PENDING',
+
+                'customer_note' =>
+                    'Development PENDING demo foglalás.',
+
+                'admin_note' =>
+                    null,
+            ]);
+
+            BookingItem::query()->create([
+                'booking_id' =>
+                    $pendingBooking->id,
+
+                'product_id' =>
+                    $product->id,
+
+                'inventory_item_id' =>
+                    null,
+
+                'quantity' =>
+                    1,
+
+                'price_per_day' =>
+                    $pricePerDay,
+
+                'deposit_per_item' =>
+                    $depositPerItem,
+
+                'rental_days' =>
+                    $rentalDays,
+
+                'rental_subtotal' =>
+                    $pricePerDay
+                    * $rentalDays,
+
+                'deposit_subtotal' =>
+                    $depositPerItem,
+            ]);
+
+            /*
+             * Seeder visszajelzés.
+             */
             $this->command?->info(
-                "Development booking létrehozva. ID: {$booking->id}"
+                "ACTIVE development booking létrehozva. ID: {$activeBooking->id}"
+            );
+
+            $this->command?->info(
+                "PENDING development booking létrehozva. ID: {$pendingBooking->id}"
             );
 
             $this->command?->info(
@@ -282,11 +380,11 @@ class BookingSeeder extends Seeder
             );
 
             $this->command?->info(
-                "Gép: {$inventoryItem->inventory_code}"
+                "ACTIVE booking gép: {$inventoryItem->inventory_code}"
             );
 
             $this->command?->info(
-                'Akkumulátor/töltő: '
+                'ACTIVE booking akkumulátor/töltő: '
                 . $batteries
                     ->concat($chargers)
                     ->pluck('inventory_code')
