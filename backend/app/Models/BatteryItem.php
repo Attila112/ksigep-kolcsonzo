@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BatteryItem extends Model
 {
@@ -31,5 +32,11 @@ class BatteryItem extends Model
     public function batterySystem(): BelongsTo
     {
         return $this->belongsTo(BatterySystem::class);
+    }
+    public function statusHistories(): HasMany
+    {
+        return $this->hasMany(
+            BatteryStatusHistory::class
+        );
     }
 }

@@ -197,7 +197,20 @@
       "serialNumber": "Sorozatszám",
       "adminNote": "Admin megjegyzés",
       "noSerialNumber": "Nincs megadva",
-      "noAdminNote": "Nincs megjegyzés"
+      "noAdminNote": "Nincs megjegyzés",
+      "statusManagement": "Állapotkezelés",
+      "statusManagementDescription": "Az akkumulátor vagy töltő aktuális állapotának módosítása.",
+      "status": "Állapot",
+      "saveStatus": "Állapot mentése",
+      "savingStatus": "Mentés...",
+      "statusUpdated": "Az állapot sikeresen módosult.",
+      "statusUpdateError": "Az állapot módosítása nem sikerült.",
+      "rentedStatusLocked": "A kiadott akkumulátor vagy töltő állapota csak a visszavételi folyamatban módosítható.",
+      "adminNoteRequired": "Ehhez az állapothoz admin megjegyzés megadása kötelező.",
+      "statusHistory": "Állapottörténet",
+      "emptyStatusHistory": "Ehhez az eszközhöz még nincs állapotváltozás.",
+      "systemUser": "Rendszer",
+      "historyNote": "Megjegyzés"
     }
   }
 }

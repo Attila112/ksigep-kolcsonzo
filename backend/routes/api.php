@@ -133,4 +133,12 @@ Route::middleware(['auth:sanctum', 'admin'])
             '/battery-items/{batteryItem}',
             [BatteryItemController::class, 'show']
         );
+        Route::patch(
+            '/battery-items/{batteryItem}/status',
+            [BatteryItemController::class, 'updateStatus']
+        );
+        Route::get(
+            '/battery-items/{batteryItem}/status-history',
+            [BatteryItemController::class, 'statusHistory']
+        );
     });
