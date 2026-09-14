@@ -13,12 +13,17 @@ type AdminInventoryPageProps = {
     params: Promise<{
         locale: string;
     }>;
+    searchParams: Promise<{
+        status?: string;
+    }>;
 };
 
 export default async function AdminInventoryPage({
     params,
+    searchParams,
 }: AdminInventoryPageProps) {
     const { locale } = await params;
+    const { status } = await searchParams;
 
     setRequestLocale(locale);
 
@@ -27,6 +32,33 @@ export default async function AdminInventoryPage({
     const { inventory_items: items } =
         await getAdminInventoryItems();
 
+    const validStatuses = [
+        "AVAILABLE",
+        "RENTED",
+        "INSPECTION",
+        "MAINTENANCE",
+        "DAMAGED",
+        "INACTIVE",
+    ] as const;
+
+    const filteredItems =
+        status === "ATTENTION"
+            ? items.filter((item) =>
+                [
+                    "INSPECTION",
+                    "MAINTENANCE",
+                    "DAMAGED",
+                ].includes(item.status)
+            )
+            : status &&
+                validStatuses.includes(
+                    status as (typeof validStatuses)[number]
+                )
+                ? items.filter(
+                    (item) =>
+                        item.status === status
+                )
+                : items;
     return (
         <div className="mx-auto w-full max-w-[1800px] p-4 sm:p-5 lg:p-6">
             <div className="mb-6">
@@ -41,6 +73,8 @@ export default async function AdminInventoryPage({
 
             <AdminInventoryStats
                 items={items}
+                locale={locale}
+                activeStatus={status}
                 labels={{
                     total: t("inventory.stats.total"),
                     available: t(
@@ -56,7 +90,7 @@ export default async function AdminInventoryPage({
             />
 
             <AdminInventoryTable
-                items={items}
+                items={filteredItems}
                 labels={{
                     columns: {
                         inventoryCode: t(

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { StatCard } from "@/components/ui/StatCard";
 
 import type {
@@ -6,6 +8,8 @@ import type {
 
 type AdminBookingStatsProps = {
     bookings: AdminBooking[];
+    locale: string;
+    activeStatus?: string;
 
     labels: {
         total: string;
@@ -17,6 +21,8 @@ type AdminBookingStatsProps = {
 
 export function AdminBookingStats({
     bookings,
+    locale,
+    activeStatus,
     labels,
 }: AdminBookingStatsProps) {
     const total = bookings.length;
@@ -38,25 +44,58 @@ export function AdminBookingStats({
 
     return (
         <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
-            <StatCard
-                title={labels.total}
-                value={total}
-            />
+            <Link
+                href={`/${locale}/admin/bookings`}
+                className="rounded-lg transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+                <StatCard
+                    title={labels.total}
+                    value={total}
+                    active={!activeStatus}
+                />
+            </Link>
 
-            <StatCard
-                title={labels.pending}
-                value={pending}
-            />
+            <Link
+                href={`/${locale}/admin/bookings?status=PENDING`}
+                className="rounded-lg transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+                <StatCard
+                    title={labels.pending}
+                    value={pending}
+                    active={
+                        activeStatus ===
+                        "PENDING"
+                    }
+                />
+            </Link>
 
-            <StatCard
-                title={labels.active}
-                value={active}
-            />
+            <Link
+                href={`/${locale}/admin/bookings?status=ACTIVE`}
+                className="rounded-lg transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+                <StatCard
+                    title={labels.active}
+                    value={active}
+                    active={
+                        activeStatus ===
+                        "ACTIVE"
+                    }
+                />
+            </Link>
 
-            <StatCard
-                title={labels.completed}
-                value={completed}
-            />
+            <Link
+                href={`/${locale}/admin/bookings?status=COMPLETED`}
+                className="rounded-lg transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+                <StatCard
+                    title={labels.completed}
+                    value={completed}
+                    active={
+                        activeStatus ===
+                        "COMPLETED"
+                    }
+                />
+            </Link>
         </div>
     );
 }

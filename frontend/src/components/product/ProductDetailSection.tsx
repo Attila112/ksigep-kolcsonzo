@@ -1,12 +1,13 @@
 import { getTranslations } from "next-intl/server";
+import Image from "next/image";
 
 import { Container } from "@/components/ui/Container";
 import { Heading } from "@/components/ui/Heading";
 import { Section } from "@/components/ui/Section";
 import type { Product } from "@/types/product";
 import { formatCurrency } from "@/utils/formatCurrency";
-import Image from "next/image";
 import { getProductImage } from "@/utils/getProductImage";
+import { ProductBookingPanel } from "@/components/product/ProductBookingPanel";
 
 type ProductDetailSectionProps = {
     product: Product;
@@ -64,39 +65,47 @@ export async function ProductDetailSection({
                                 {formatCurrency(product.deposit)}
                             </p>
                         </div>
-                    </div>
-                    {product.battery_system && (
-                        <div className="mt-10 rounded-xl border border-slate-200 bg-white p-5">
-                            <Heading level={2} size="md">
-                                {t("details.packageContents")}
-                            </Heading>
+                        {product.battery_system && (
+                            <div className="mt-8 border-t border-slate-200 pt-6">
+                                <Heading level={2} size="md">
+                                    {t("details.packageContents")}
+                                </Heading>
 
-                            <p className="mt-4 text-sm text-slate-500">
-                                {t("details.batterySystem")}
-                            </p>
+                                <p className="mt-4 text-sm text-slate-500">
+                                    {t("details.batterySystem")}
+                                </p>
 
-                            <p className="font-medium">
-                                {product.battery_system.manufacturer}{" "}
-                                {product.battery_system.name}
-                            </p>
+                                <p className="font-medium">
+                                    {product.battery_system.manufacturer}{" "}
+                                    {product.battery_system.name}
+                                </p>
 
-                            <div className="mt-4 space-y-2 text-slate-700">
-                                {product.required_batteries > 0 && (
-                                    <p>
-                                        ✓ {product.required_batteries} db{" "}
-                                        {t("details.battery")}
-                                    </p>
-                                )}
+                                <div className="mt-4 space-y-2 text-slate-700">
+                                    {product.required_batteries > 0 && (
+                                        <p>
+                                            {product.required_batteries}{" "}
+                                            {t("details.battery")}
+                                        </p>
+                                    )}
 
-                                {product.required_chargers > 0 && (
-                                    <p>
-                                        ✓ {product.required_chargers} db{" "}
-                                        {t("details.charger")}
-                                    </p>
-                                )}
+                                    {product.required_chargers > 0 && (
+                                        <p>
+                                            {product.required_chargers}{" "}
+                                            {t("details.charger")}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
+                </div>
+
+
+
+                <div className="mt-10">
+                    <ProductBookingPanel
+                        product={product}
+                    />
                 </div>
             </Container>
         </Section>

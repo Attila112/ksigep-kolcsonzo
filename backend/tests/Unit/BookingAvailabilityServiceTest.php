@@ -272,4 +272,155 @@ class BookingAvailabilityServiceTest extends TestCase
 
         $this->assertSame(1, $availableQuantity);
     }
+    public function test_it_returns_daily_availability_for_a_date_range(): void
+    {
+        $product = $this->createProduct();
+
+        $this->createInventoryItems($product, 3);
+
+        $booking = $this->createBooking([
+            'start_date' => '2026-10-03',
+            'end_date' => '2026-10-04',
+            'status' => 'CONFIRMED',
+        ]);
+
+        $booking->items()->create([
+            'product_id' => $product->id,
+            'inventory_item_id' => null,
+            'quantity' => 2,
+            'price_per_day' => 8000,
+            'deposit_per_item' => 30000,
+            'rental_days' => 2,
+            'rental_subtotal' => 32000,
+            'deposit_subtotal' => 60000,
+        ]);
+
+        $service = new BookingAvailabilityService();
+
+        $calendar = $service->availabilityCalendar(
+            product: $product,
+            startDate: '2026-10-01',
+            endDate: '2026-10-05',
+        );
+
+        $this->assertSame([
+            [
+                'date' => '2026-10-01',
+                'available_quantity' => 3,
+                'available' => true,
+            ],
+            [
+                'date' => '2026-10-02',
+                'available_quantity' => 3,
+                'available' => true,
+            ],
+            [
+                'date' => '2026-10-03',
+                'available_quantity' => 1,
+                'available' => true,
+            ],
+            [
+                'date' => '2026-10-04',
+                'available_quantity' => 1,
+                'available' => true,
+            ],
+            [
+                'date' => '2026-10-05',
+                'available_quantity' => 3,
+                'available' => true,
+            ],
+        ], $calendar);
+    }
+
+    public function test_calendar_combines_overlapping_booking_quantities(): void
+    {
+        $product = $this->createProduct();
+
+        $this->createInventoryItems($product, 3);
+
+        $firstBooking = $this->createBooking([
+            'start_date' => '2026-10-02',
+            'end_date' => '2026-10-04',
+            'status' => 'PENDING',
+        ]);
+
+        $firstBooking->items()->create([
+            'product_id' => $product->id,
+            'inventory_item_id' => null,
+            'quantity' => 1,
+            'price_per_day' => 8000,
+            'deposit_per_item' => 30000,
+            'rental_days' => 3,
+            'rental_subtotal' => 24000,
+            'deposit_subtotal' => 30000,
+        ]);
+
+        $secondBooking = $this->createBooking([
+            'start_date' => '2026-10-03',
+            'end_date' => '2026-10-03',
+            'status' => 'CONFIRMED',
+        ]);
+
+        $secondBooking->items()->create([
+            'product_id' => $product->id,
+            'inventory_item_id' => null,
+            'quantity' => 2,
+            'price_per_day' => 8000,
+            'deposit_per_item' => 30000,
+            'rental_days' => 1,
+            'rental_subtotal' => 16000,
+            'deposit_subtotal' => 60000,
+        ]);
+
+        $service = new BookingAvailabilityService();
+
+        $calendar = $service->availabilityCalendar(
+            product: $product,
+            startDate: '2026-10-01',
+            endDate: '2026-10-05',
+        );
+
+        $this->assertSame([
+            [
+                'date' => '2026-10-01',
+                'available_quantity' => 3,
+                'available' => true,
+            ],
+            [
+                'date' => '2026-10-02',
+                'available_quantity' => 2,
+                'available' => true,
+            ],
+            [
+                'date' => '2026-10-03',
+                'available_quantity' => 0,
+                'available' => false,
+            ],
+            [
+                'date' => '2026-10-04',
+                'available_quantity' => 2,
+                'available' => true,
+            ],
+            [
+                'date' => '2026-10-05',
+                'available_quantity' => 3,
+                'available' => true,
+            ],
+        ], $calendar);
+    }
+
+    public function test_calendar_rejects_an_invalid_date_range(): void
+    {
+        $product = $this->createProduct();
+
+        $service = new BookingAvailabilityService();
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $service->availabilityCalendar(
+            product: $product,
+            startDate: '2026-10-10',
+            endDate: '2026-10-01',
+        );
+    }
 }

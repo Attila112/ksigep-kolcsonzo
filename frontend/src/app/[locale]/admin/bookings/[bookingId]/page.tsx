@@ -8,6 +8,7 @@ import { AdminBookingHeader } from "@/components/admin/bookings/detail/AdminBook
 import { AdminBookingItems } from "@/components/admin/bookings/detail/AdminBookingItems";
 import { AdminBookingApprovalActions } from "@/components/admin/bookings/detail/AdminBookingApprovalActions";
 import { AdminBookingIssueActions } from "@/components/admin/bookings/detail/AdminBookingIssueActions";
+import { AdminBookingReturnActions } from "@/components/admin/bookings/detail/AdminBookingReturnActions";
 
 import { getAdminBatteryItems } from "@/services/adminBatteryService";
 import { getAdminInventoryItems } from "@/services/adminInventoryService";
@@ -281,8 +282,58 @@ export default async function AdminBookingDetailPage({
                         ),
                     }}
                 />
+                <AdminBookingReturnActions
+                    bookingId={booking.id}
+                    status={booking.status}
+                    items={booking.items}
+                    labels={{
+                        title: t(
+                            "bookings.detail.return.title"
+                        ),
+                        description: t(
+                            "bookings.detail.return.description"
+                        ),
+                        product: t(
+                            "bookings.detail.return.product"
+                        ),
+                        machine: t(
+                            "bookings.detail.return.machine"
+                        ),
+                        serialNumber: t(
+                            "bookings.detail.return.serialNumber"
+                        ),
+                        accessories: t(
+                            "bookings.detail.return.accessories"
+                        ),
+                        battery: t(
+                            "bookings.detail.return.battery"
+                        ),
+                        charger: t(
+                            "bookings.detail.return.charger"
+                        ),
+                        noSerialNumber: t(
+                            "bookings.detail.return.noSerialNumber"
+                        ),
+                        selectAtLeastOne: t(
+                            "bookings.detail.return.selectAtLeastOne"
+                        ),
+                        returnSelected: t(
+                            "bookings.detail.return.returnSelected"
+                        ),
+                        returning: t(
+                            "bookings.detail.return.returning"
+                        ),
+                        success: t(
+                            "bookings.detail.return.success"
+                        ),
+                        unknownError: t(
+                            "bookings.detail.return.unknownError"
+                        ),
+                    }}
+                />
                 <AdminBookingItems
                     items={booking.items}
+                    locale={locale}
                     labels={{
                         title: t(
                             "bookings.detail.items"

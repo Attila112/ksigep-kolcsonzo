@@ -58,7 +58,7 @@ class BookingSeeder extends Seeder
             if (! $product) {
                 throw new RuntimeException(
                     'Nem található olyan aktív akkumulátoros termék, '
-                    . 'amelyhez akkumulátor és töltő is szükséges.'
+                        . 'amelyhez akkumulátor és töltő is szükséges.'
                 );
             }
 
@@ -69,9 +69,10 @@ class BookingSeeder extends Seeder
              */
 
             /*
-             * Keresünk hozzá egy szabad fizikai géppéldányt.
-             */
-            $inventoryItem = InventoryItem::query()
+ * Két szabad fizikai géppéldányt keresünk
+ * a részleges visszavétel teszteléséhez.
+ */
+            $inventoryItems = InventoryItem::query()
                 ->where(
                     'product_id',
                     $product->id
@@ -81,11 +82,12 @@ class BookingSeeder extends Seeder
                     'AVAILABLE'
                 )
                 ->orderBy('id')
-                ->first();
+                ->limit(2)
+                ->get();
 
-            if (! $inventoryItem) {
+            if ($inventoryItems->count() !== 2) {
                 throw new RuntimeException(
-                    "Nincs elérhető géppéldány ehhez a termékhez: {$product->name}"
+                    "Nincs két elérhető géppéldány ehhez a termékhez: {$product->name}"
                 );
             }
 
@@ -108,14 +110,14 @@ class BookingSeeder extends Seeder
                 )
                 ->orderBy('id')
                 ->limit(
-                    $product->required_batteries
+                    $product->required_batteries * 2
                 )
                 ->get();
 
             if (
                 $batteries->count()
                 !==
-                (int) $product->required_batteries
+                (int) $product->required_batteries * 2
             ) {
                 throw new RuntimeException(
                     "Nincs elegendő elérhető akkumulátor ehhez a termékhez: {$product->name}"
@@ -140,14 +142,14 @@ class BookingSeeder extends Seeder
                 )
                 ->orderBy('id')
                 ->limit(
-                    $product->required_chargers
+                    $product->required_chargers * 2
                 )
                 ->get();
 
             if (
                 $chargers->count()
                 !==
-                (int) $product->required_chargers
+                (int) $product->required_chargers * 2
             ) {
                 throw new RuntimeException(
                     "Nincs elegendő elérhető töltő ehhez a termékhez: {$product->name}"
@@ -164,37 +166,37 @@ class BookingSeeder extends Seeder
                 'user_id' => null,
 
                 'customer_name' =>
-                    'Fejlesztői Teszt Ügyfél',
+                'Fejlesztői Teszt Ügyfél',
 
                 'customer_email' =>
-                    'booking-demo@example.com',
+                'booking-demo@example.com',
 
                 'customer_phone' =>
-                    '+36301234567',
+                '+36301234567',
 
                 'start_date' =>
-                    now()->toDateString(),
+                now()->toDateString(),
 
                 'end_date' =>
-                    now()
-                        ->addDays(2)
-                        ->toDateString(),
+                now()
+                    ->addDays(2)
+                    ->toDateString(),
 
                 'pickup_type' =>
-                    'SELF_PICKUP',
+                'SELF_PICKUP',
 
                 'planned_pickup_at' =>
-                    now()
-                        ->setTime(9, 0),
+                now()
+                    ->setTime(9, 0),
 
                 'status' =>
-                    'CONFIRMED',
+                'CONFIRMED',
 
                 'customer_note' =>
-                    'Development ACTIVE demo foglalás.',
+                'Development ACTIVE demo foglalás.',
 
                 'admin_note' =>
-                    null,
+                null,
             ]);
 
             /*
@@ -212,58 +214,70 @@ class BookingSeeder extends Seeder
 
             BookingItem::query()->create([
                 'booking_id' =>
-                    $activeBooking->id,
+                $activeBooking->id,
 
                 'product_id' =>
-                    $product->id,
+                $product->id,
 
                 'inventory_item_id' =>
-                    null,
+                null,
 
                 'quantity' =>
-                    1,
+                2,
 
                 'price_per_day' =>
-                    $pricePerDay,
+                $pricePerDay,
 
                 'deposit_per_item' =>
-                    $depositPerItem,
+                $depositPerItem,
 
                 'rental_days' =>
-                    $rentalDays,
+                $rentalDays,
 
                 'rental_subtotal' =>
-                    $pricePerDay
-                    * $rentalDays,
+                $pricePerDay
+                    * $rentalDays * 2,
 
                 'deposit_subtotal' =>
-                    $depositPerItem,
+                $depositPerItem * 2,
             ]);
 
             /*
-             * A konkrét akkumulátorok és töltők azonosítóinak
-             * összeállítása.
-             */
-            $batteryItemIds = $batteries
-                ->pluck('id')
-                ->merge(
-                    $chargers->pluck('id')
-                )
-                ->values()
-                ->all();
+ * Gépenként külön összeállítjuk a hozzá tartozó
+ * akkumulátorokat és töltőket.
+ */
+            $batteryAllocations = [];
 
-            /*
-             * A valódi kiadási service futtatása.
-             *
-             * Ez fogja:
-             *
-             * - létrehozni a gép allocationt,
-             * - RENTED állapotba tenni a gépet,
-             * - létrehozni a battery allocation rekordokat,
-             * - RENTED állapotba tenni az akkukat/töltőket,
-             * - létrehozni a szükséges státusztörténeteket,
-             * - ACTIVE állapotba tenni a bookingot.
-             */
+            foreach (
+                $inventoryItems->values()
+                as $index => $inventoryItem
+            ) {
+                $batteryIds = $batteries
+                    ->slice(
+                        $index * $product->required_batteries,
+                        $product->required_batteries
+                    )
+                    ->pluck('id');
+
+                $chargerIds = $chargers
+                    ->slice(
+                        $index * $product->required_chargers,
+                        $product->required_chargers
+                    )
+                    ->pluck('id');
+
+                $batteryAllocations[] = [
+                    'inventory_item_id' =>
+                    $inventoryItem->id,
+
+                    'battery_item_ids' =>
+                    $batteryIds
+                        ->merge($chargerIds)
+                        ->values()
+                        ->all(),
+                ];
+            }
+
             /** @var BookingIssueService $bookingIssueService */
             $bookingIssueService = app(
                 BookingIssueService::class
@@ -271,18 +285,13 @@ class BookingSeeder extends Seeder
 
             $bookingIssueService->issue(
                 booking: $activeBooking,
-                inventoryItemIds: [
-                    $inventoryItem->id,
-                ],
-                batteryAllocations: [
-                    [
-                        'inventory_item_id' =>
-                            $inventoryItem->id,
 
-                        'battery_item_ids' =>
-                            $batteryItemIds,
-                    ],
-                ],
+                inventoryItemIds: $inventoryItems
+                    ->pluck('id')
+                    ->values()
+                    ->all(),
+
+                batteryAllocations: $batteryAllocations,
             );
 
             /*
@@ -298,70 +307,70 @@ class BookingSeeder extends Seeder
                 'user_id' => null,
 
                 'customer_name' =>
-                    'Jóváhagyásra Váró Ügyfél',
+                'Jóváhagyásra Váró Ügyfél',
 
                 'customer_email' =>
-                    'booking-pending@example.com',
+                'booking-pending@example.com',
 
                 'customer_phone' =>
-                    '+36309876543',
+                '+36309876543',
 
                 'start_date' =>
-                    now()
-                        ->addDays(30)
-                        ->toDateString(),
+                now()
+                    ->addDays(30)
+                    ->toDateString(),
 
                 'end_date' =>
-                    now()
-                        ->addDays(32)
-                        ->toDateString(),
+                now()
+                    ->addDays(32)
+                    ->toDateString(),
 
                 'pickup_type' =>
-                    'SELF_PICKUP',
+                'SELF_PICKUP',
 
                 'planned_pickup_at' =>
-                    now()
-                        ->addDays(30)
-                        ->setTime(10, 0),
+                now()
+                    ->addDays(30)
+                    ->setTime(10, 0),
 
                 'status' =>
-                    'PENDING',
+                'PENDING',
 
                 'customer_note' =>
-                    'Development PENDING demo foglalás.',
+                'Development PENDING demo foglalás.',
 
                 'admin_note' =>
-                    null,
+                null,
             ]);
 
             BookingItem::query()->create([
                 'booking_id' =>
-                    $pendingBooking->id,
+                $pendingBooking->id,
 
                 'product_id' =>
-                    $product->id,
+                $product->id,
 
                 'inventory_item_id' =>
-                    null,
+                null,
 
                 'quantity' =>
-                    1,
+                1,
 
                 'price_per_day' =>
-                    $pricePerDay,
+                $pricePerDay,
 
                 'deposit_per_item' =>
-                    $depositPerItem,
+                $depositPerItem,
 
                 'rental_days' =>
-                    $rentalDays,
+                $rentalDays,
 
                 'rental_subtotal' =>
-                    $pricePerDay
+                $pricePerDay
                     * $rentalDays,
 
                 'deposit_subtotal' =>
-                    $depositPerItem,
+                $depositPerItem,
             ]);
 
             /*
@@ -380,12 +389,15 @@ class BookingSeeder extends Seeder
             );
 
             $this->command?->info(
-                "ACTIVE booking gép: {$inventoryItem->inventory_code}"
+                'ACTIVE booking gépek: '
+                    . $inventoryItems
+                    ->pluck('inventory_code')
+                    ->implode(', ')
             );
 
             $this->command?->info(
                 'ACTIVE booking akkumulátor/töltő: '
-                . $batteries
+                    . $batteries
                     ->concat($chargers)
                     ->pluck('inventory_code')
                     ->implode(', ')

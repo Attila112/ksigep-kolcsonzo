@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductAvailabilityRequest;
+use App\Http\Requests\ProductAvailabilityCalendarRequest;
 use App\Models\Product;
 use App\Services\BookingAvailabilityService;
 use Illuminate\Http\JsonResponse;
@@ -97,6 +98,37 @@ class ProductController extends Controller
             'end_date' => $validated['end_date'],
             'available_quantity' => $availableQuantity,
             'available' => $availableQuantity > 0,
+        ]);
+    }
+    /**
+     * Returns the daily availability calendar of a product
+     * for the requested date range.
+     */
+    public function availabilityCalendar(
+        ProductAvailabilityCalendarRequest $request,
+        Product $product,
+        BookingAvailabilityService $availabilityService,
+    ): JsonResponse {
+        if (
+            ! $product->active ||
+            ! $product->category()->where('active', true)->exists()
+        ) {
+            abort(404);
+        }
+
+        $validated = $request->validated();
+
+        $days = $availabilityService->availabilityCalendar(
+            product: $product,
+            startDate: $validated['start_date'],
+            endDate: $validated['end_date'],
+        );
+
+        return response()->json([
+            'product_id' => $product->id,
+            'start_date' => $validated['start_date'],
+            'end_date' => $validated['end_date'],
+            'days' => $days,
         ]);
     }
 }

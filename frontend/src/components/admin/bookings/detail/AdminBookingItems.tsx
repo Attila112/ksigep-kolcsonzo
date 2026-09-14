@@ -8,10 +8,11 @@ import type {
 import {
     formatDateTime,
 } from "@/utils/formatDate";
-
+import Link from "next/link";
 
 type AdminBookingItemsProps = {
     items: AdminBookingItem[];
+    locale: string;
     labels: {
         title: string;
         quantity: string;
@@ -36,6 +37,7 @@ type AdminBookingItemsProps = {
 
 export function AdminBookingItems({
     items,
+    locale,
     labels,
 }: AdminBookingItemsProps) {
     return (
@@ -87,10 +89,9 @@ export function AdminBookingItems({
                                                         labels.inventoryItem
                                                     }
                                                     value={
-                                                        allocation
-                                                            .inventory_item
-                                                            .inventory_code
+                                                        allocation.inventory_item.inventory_code
                                                     }
+                                                    href={`/${locale}/admin/inventory/${allocation.inventory_item.id}`}
                                                 />
 
                                                 <Info
@@ -156,11 +157,12 @@ export function AdminBookingItems({
                                                                         >
                                                                             <div className="flex items-start justify-between gap-3">
                                                                                 <div>
-                                                                                    <p className="font-medium text-slate-950 dark:text-white">
-                                                                                        {
-                                                                                            batteryItem.inventory_code
-                                                                                        }
-                                                                                    </p>
+                                                                                    <Link
+                                                                                        href={`/${locale}/admin/batteries/${batteryItem.id}`}
+                                                                                        className="font-medium text-blue-600 hover:underline dark:text-blue-400"
+                                                                                    >
+                                                                                        {batteryItem.inventory_code}
+                                                                                    </Link>
 
                                                                                     <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                                                                                         {batteryItem.type ===
@@ -219,11 +221,13 @@ export function AdminBookingItems({
 type InfoProps = {
     label: string;
     value: string;
+    href?: string;
 };
 
 function Info({
     label,
     value,
+    href,
 }: InfoProps) {
     return (
         <div>
@@ -231,9 +235,18 @@ function Info({
                 {label}
             </p>
 
-            <p className="mt-1 wrap-break-word text-sm font-medium text-slate-900 dark:text-slate-100">
-                {value}
-            </p>
+            {href ? (
+                <Link
+                    href={href}
+                    className="mt-1 inline-block wrap-break-word text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
+                >
+                    {value}
+                </Link>
+            ) : (
+                <p className="mt-1 wrap-break-word text-sm font-medium text-slate-900 dark:text-slate-100">
+                    {value}
+                </p>
+            )}
         </div>
     );
 }

@@ -160,3 +160,53 @@ export async function issueBookingAction(
         };
     }
 }
+type ReturnBookingItemsActionResult =
+    | {
+        success: true;
+        booking: AdminBooking;
+    }
+    | {
+        success: false;
+        message: string;
+        errors?: Record<string, string[]>;
+    };
+
+export async function returnBookingItemsAction(
+    bookingId: number,
+    inventoryItemIds: number[]
+): Promise<ReturnBookingItemsActionResult> {
+    const token = await getAuthToken();
+
+    try {
+        const response =
+            await apiRequest<BookingActionResponse>(
+                `/admin/bookings/${bookingId}/return-items`,
+                {
+                    method: "POST",
+                    token,
+                    body: JSON.stringify({
+                        inventory_item_ids:
+                            inventoryItemIds,
+                    }),
+                }
+            );
+
+        return {
+            success: true,
+            booking: response.booking,
+        };
+    } catch (error) {
+        if (error instanceof ApiError) {
+            return {
+                success: false,
+                message: error.message,
+                errors: error.errors,
+            };
+        }
+
+        return {
+            success: false,
+            message: "UNKNOWN_ERROR",
+        };
+    }
+}

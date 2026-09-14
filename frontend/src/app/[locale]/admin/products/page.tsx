@@ -10,17 +10,48 @@ type AdminProductsPageProps = {
     params: Promise<{
         locale: string;
     }>;
+    searchParams: Promise<{
+        filter?: string;
+    }>;
 };
 
 export default async function AdminProductsPage({
     params,
+    searchParams,
 }: AdminProductsPageProps) {
     const { locale } = await params;
+    const { filter } = await searchParams;
 
     setRequestLocale(locale);
 
     const t = await getTranslations("Admin");
     const data = await getAdminProducts();
+
+    const filteredProducts =
+        filter === "ACTIVE"
+            ? data.products.filter(
+                (product) =>
+                    product.active
+            )
+            : filter === "HAS_INVENTORY"
+                ? data.products.filter(
+                    (product) =>
+                        product.inventory_items_count >
+                        0
+                )
+                : filter === "AVAILABLE"
+                    ? data.products.filter(
+                        (product) =>
+                            product.available_inventory_count >
+                            0
+                    )
+                    : filter === "BATTERY"
+                        ? data.products.filter(
+                            (product) =>
+                                product.battery_system !==
+                                null
+                        )
+                        : data.products;
 
     return (
         <div className="p-4 lg:p-6">
@@ -36,6 +67,8 @@ export default async function AdminProductsPage({
 
             <AdminProductStats
                 products={data.products}
+                locale={locale}
+                activeFilter={filter}
                 labels={{
                     activeProducts: t("products.stats.activeProducts"),
                     totalInventory: t("products.stats.totalInventory"),
@@ -49,7 +82,7 @@ export default async function AdminProductsPage({
             />
 
             <AdminProductTable
-                products={data.products}
+                products={filteredProducts}
                 labels={{
                     columns: {
                         image: t("products.columns.image"),

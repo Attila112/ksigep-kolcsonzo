@@ -307,6 +307,22 @@
         "accessoryRequirementInvalid": "Minden géphez pontosan a szükséges számú akkumulátort és töltőt kell kiválasztani.",
         "success": "A foglalás sikeresen kiadásra került.",
         "unknownError": "Váratlan hiba történt a foglalás kiadásakor."
+      },
+      "return": {
+        "title": "Gépek visszavétele",
+        "description": "Válaszd ki a visszaérkezett gépeket. A gépek és a hozzájuk tartozó akkumulátorok és töltők ellenőrzésre váró állapotba kerülnek.",
+        "product": "Termék",
+        "machine": "Géppéldány",
+        "serialNumber": "Sorozatszám",
+        "accessories": "Visszavett akkumulátorok és töltők",
+        "battery": "Akkumulátor",
+        "charger": "Töltő",
+        "noSerialNumber": "Nincs megadva",
+        "selectAtLeastOne": "Legalább egy visszavett gépet ki kell választani.",
+        "returnSelected": "Kiválasztott gépek visszavétele",
+        "returning": "Visszavétel folyamatban...",
+        "success": "A kiválasztott gépek sikeresen visszavételre kerültek.",
+        "unknownError": "Váratlan hiba történt a visszavétel során."
       }
     }
   }

@@ -27,6 +27,10 @@ Route::get(
     [ProductController::class, 'availability']
 );
 Route::get(
+    '/products/{product}/availability-calendar',
+    [ProductController::class, 'availabilityCalendar']
+);
+Route::get(
     '/work-types',
     [WorkTypeController::class, 'index']
 );

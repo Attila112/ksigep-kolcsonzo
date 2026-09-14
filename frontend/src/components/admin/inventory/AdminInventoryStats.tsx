@@ -1,8 +1,13 @@
+import Link from "next/link";
+
 import { StatCard } from "@/components/ui/StatCard";
 import type { AdminInventoryItem } from "@/types/adminInventory";
 
 type AdminInventoryStatsProps = {
     items: AdminInventoryItem[];
+    locale: string;
+    activeStatus?: string;
+
     labels: {
         total: string;
         available: string;
@@ -13,6 +18,8 @@ type AdminInventoryStatsProps = {
 
 export function AdminInventoryStats({
     items,
+    locale,
+    activeStatus,
     labels,
 }: AdminInventoryStatsProps) {
     const total = items.length;
@@ -35,22 +42,58 @@ export function AdminInventoryStats({
 
     return (
         <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
-            <StatCard title={labels.total} value={total} />
+            <Link
+                href={`/${locale}/admin/inventory`}
+                className="rounded-lg transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+                <StatCard
+                    title={labels.total}
+                    value={total}
+                    active={!activeStatus}
+                />
+            </Link>
 
-            <StatCard
-                title={labels.available}
-                value={available}
-            />
+            <Link
+                href={`/${locale}/admin/inventory?status=AVAILABLE`}
+                className="rounded-lg transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+                <StatCard
+                    title={labels.available}
+                    value={available}
+                    active={
+                        activeStatus ===
+                        "AVAILABLE"
+                    }
+                />
+            </Link>
 
-            <StatCard
-                title={labels.rented}
-                value={rented}
-            />
+            <Link
+                href={`/${locale}/admin/inventory?status=RENTED`}
+                className="rounded-lg transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+                <StatCard
+                    title={labels.rented}
+                    value={rented}
+                    active={
+                        activeStatus ===
+                        "RENTED"
+                    }
+                />
+            </Link>
 
-            <StatCard
-                title={labels.attention}
-                value={attention}
-            />
+            <Link
+                href={`/${locale}/admin/inventory?status=ATTENTION`}
+                className="rounded-lg transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+                <StatCard
+                    title={labels.attention}
+                    value={attention}
+                    active={
+                        activeStatus ===
+                        "ATTENTION"
+                    }
+                />
+            </Link>
         </div>
     );
 }

@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { routing } from "@/core/i18n/routing";
 import { getTranslations } from "next-intl/server";
 import { PublicLayout } from "@/components/layout/PublicLayout";
+import { BookingCartProvider } from "@/components/booking/BookingCartProvider";
 
 type LocaleLayoutProps = {
     children: ReactNode;
@@ -47,7 +48,10 @@ export default async function LocaleLayout({
                     year: new Date().getFullYear(),
                 })}
             >
-                {children}
+                <BookingCartProvider>
+                    {children}
+                </BookingCartProvider>
+
             </PublicLayout>
         </NextIntlClientProvider>
     );

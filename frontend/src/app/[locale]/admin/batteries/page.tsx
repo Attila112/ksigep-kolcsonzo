@@ -13,12 +13,19 @@ type AdminBatteriesPageProps = {
     params: Promise<{
         locale: string;
     }>;
+    searchParams: Promise<{
+        type?: string;
+        status?: string;
+    }>;
 };
 
 export default async function AdminBatteriesPage({
     params,
+    searchParams
 }: AdminBatteriesPageProps) {
     const { locale } = await params;
+    const { type, status } = await searchParams;
+
 
     setRequestLocale(locale);
 
@@ -26,6 +33,41 @@ export default async function AdminBatteriesPage({
 
     const { battery_items: items } =
         await getAdminBatteryItems();
+    const validTypes = [
+        "BATTERY",
+        "CHARGER",
+    ] as const;
+
+    const validStatuses = [
+        "AVAILABLE",
+        "RENTED",
+        "INSPECTION",
+        "MAINTENANCE",
+        "DAMAGED",
+        "INACTIVE",
+    ] as const;
+
+    const filteredItems =
+        items.filter((item) => {
+            const typeMatches =
+                !type ||
+                !validTypes.includes(
+                    type as (typeof validTypes)[number]
+                ) ||
+                item.type === type;
+
+            const statusMatches =
+                !status ||
+                !validStatuses.includes(
+                    status as (typeof validStatuses)[number]
+                ) ||
+                item.status === status;
+
+            return (
+                typeMatches &&
+                statusMatches
+            );
+        });
 
     const statusLabels = {
         AVAILABLE: t(
@@ -62,6 +104,9 @@ export default async function AdminBatteriesPage({
 
             <AdminBatteryStats
                 items={items}
+                locale={locale}
+                activeType={type}
+                activeStatus={status}
                 labels={{
                     total: t(
                         "batteries.stats.total"
@@ -79,7 +124,7 @@ export default async function AdminBatteriesPage({
             />
 
             <AdminBatteryTable
-                items={items}
+                items={filteredItems}
                 labels={{
                     columns: {
                         inventoryCode: t(

@@ -15,21 +15,43 @@ type AdminBookingsPageProps = {
     params: Promise<{
         locale: string;
     }>;
+    searchParams: Promise<{
+        status?: string;
+    }>;
 };
 
 export default async function AdminBookingsPage({
     params,
+    searchParams,
 }: AdminBookingsPageProps) {
     const { locale } = await params;
+    const { status } = await searchParams;
 
     setRequestLocale(locale);
 
-    const t =
-        await getTranslations("Admin");
+    const t = await getTranslations("Admin");
 
-    const {
-        bookings,
-    } = await getAdminBookings();
+    const { bookings } = await getAdminBookings();
+
+    const validStatuses = [
+        "PENDING",
+        "CONFIRMED",
+        "REJECTED",
+        "CANCELLED",
+        "ACTIVE",
+        "COMPLETED",
+    ] as const;
+
+    const filteredBookings =
+        status &&
+            validStatuses.includes(
+                status as (typeof validStatuses)[number]
+            )
+            ? bookings.filter(
+                (booking) =>
+                    booking.status === status
+            )
+            : bookings;
 
     const statusLabels = {
         PENDING: t(
@@ -82,6 +104,8 @@ export default async function AdminBookingsPage({
 
             <AdminBookingStats
                 bookings={bookings}
+                locale={locale}
+                activeStatus={status}
                 labels={{
                     total: t(
                         "bookings.stats.total"
@@ -99,7 +123,7 @@ export default async function AdminBookingsPage({
             />
 
             <AdminBookingTable
-                bookings={bookings}
+                bookings={filteredBookings}
                 labels={{
                     columns: {
                         id: t(

@@ -15,6 +15,32 @@
     "batterySystem": "Akkumulátorrendszer",
     "battery": "akkumulátor",
     "charger": "töltő",
-    "included": "A bérlés tartalmazza"
+    "included": "A bérlés tartalmazza",
+    "availability": {
+      "title": "Elérhetőség",
+      "description": "Válaszd ki a bérlés kezdő- és befejező dátumát.",
+      "available": "Elérhető",
+      "lowAvailability": "Már csak 1 db elérhető",
+      "unavailable": "Nem elérhető",
+      "selected": "Kiválasztott időszak",
+      "selectedPeriod": "Kiválasztott időszak",
+      "availableQuantity": "{count} db elérhető",
+      "periodAvailable": "A kiválasztott időszakban elérhető",
+      "periodUnavailable": "A kiválasztott időszak nem foglalható.",
+      "loading": "Elérhetőség betöltése...",
+      "error": "Az elérhetőség betöltése nem sikerült."
+    },
+    "booking": {
+      "quantity": "Darabszám",
+      "decreaseQuantity": "Darabszám csökkentése",
+      "increaseQuantity": "Darabszám növelése",
+      "maximumAvailable": "Maximum {count} db érhető el a kiválasztott időszakban.",
+      "addToBooking": "Foglaláshoz adás",
+      "updateBooking": "Foglalás módosítása",
+      "added": "A terméket hozzáadtuk a foglaláshoz.",
+      "updated": "A termék mennyisége frissült a foglalásban.",
+      "differentPeriodWarning": "A jelenlegi foglalás időszaka: {startDate} – {endDate}. Ehhez a foglaláshoz csak erre az időszakra választhatsz további termékeket.",
+      "differentPeriodError": "A kiválasztott időszak nem egyezik a jelenlegi foglalás időszakával."
+    }
   }
 }
