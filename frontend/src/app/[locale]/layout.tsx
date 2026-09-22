@@ -41,18 +41,18 @@ export default async function LocaleLayout({
 
     return (
         <NextIntlClientProvider messages={messages}>
-            <PublicLayout
-                applicationName={common("applicationName")}
-                productsLabel={common("navigation.products")}
-                copyright={common("footer.copyright", {
-                    year: new Date().getFullYear(),
-                })}
-            >
-                <BookingCartProvider>
+            <BookingCartProvider>
+                <PublicLayout
+                    applicationName={common("applicationName")}
+                    productsLabel={common("navigation.products")}
+                    bookingLabel={common("navigation.booking")}
+                    copyright={common("footer.copyright", {
+                        year: new Date().getFullYear(),
+                    })}
+                >
                     {children}
-                </BookingCartProvider>
-
-            </PublicLayout>
+                </PublicLayout>
+            </BookingCartProvider>
         </NextIntlClientProvider>
     );
 }

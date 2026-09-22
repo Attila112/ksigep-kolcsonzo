@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/core/i18n/navigation";
 
 import { ProductAvailabilityCalendar } from "@/components/product/ProductAvailabilityCalendar";
 import { useBookingCart } from "@/components/booking/BookingCartProvider";
@@ -135,6 +136,8 @@ export function ProductBookingPanel({
                     deposit:
                         product.deposit,
                     quantity,
+                    availableQuantity:
+                        selection.availableQuantity,
                 },
             });
 
@@ -245,6 +248,12 @@ export function ProductBookingPanel({
                                 {message}
                             </div>
                         )}
+                        <Link
+                            href="/booking"
+                            className="mt-3 inline-flex font-semibold underline"
+                        >
+                            {t("viewBooking")}
+                        </Link>
 
                         {error && (
                             <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">

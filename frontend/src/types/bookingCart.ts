@@ -4,6 +4,7 @@ export type BookingCartItem = {
     pricePerDay: number;
     deposit: number;
     quantity: number;
+    availableQuantity: number;
 };
 
 export type BookingCartPeriod = {

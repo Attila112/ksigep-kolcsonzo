@@ -1,1 +1,25 @@
-{}
+{
+    "cart": {
+        "title": "Foglalás",
+        "empty": "A foglalásod jelenleg üres.",
+        "period": "{startDate} – {endDate} ({days} nap)",
+        "itemQuantity": "{count} db",
+        "pricePerDay": "{price} / nap",
+        "itemDeposit": "Kaució: {price}",
+        "remove": "Eltávolítás",
+        "rentalTotal": "Bérleti díj",
+        "depositTotal": "Kaució",
+        "totalPayable": "Összesen",
+        "clear": "Foglalás törlése",
+        "continue": "Tovább a foglaláshoz",
+        "quantity": "Darabszám",
+        "decreaseQuantity": "Darabszám csökkentése",
+        "increaseQuantity": "Darabszám növelése",
+        "checkingAvailability": "Elérhetőség ellenőrzése...",
+        "maximumAvailable": "Maximum {count} db érhető el.",
+        "availabilityError": "Az elérhetőség ellenőrzése nem sikerült.",
+        "quantityUnavailable": "A kiválasztott darabszám már nem érhető el.",
+        "availabilityCheckError": "Egy vagy több termék elérhetőségét nem sikerült ellenőrizni. Próbáld újra később.",
+        "cartUnavailable": "A foglalásban olyan mennyiség szerepel, amely már nem érhető el."
+    }
+}

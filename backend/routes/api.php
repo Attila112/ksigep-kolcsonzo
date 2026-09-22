@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Api\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Api\Admin\BatterySystemController as AdminBatterySystemController;
 use App\Http\Controllers\Api\Admin\BatteryItemController;
+use App\Http\Controllers\Api\BookingAvailabilityController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,11 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', RegisterController::class);
     Route::post('/login', LoginController::class);
 });
+
+Route::post(
+    '/booking/availability',
+    [BookingAvailabilityController::class, 'check']
+);
 
 Route::get(
     '/products/{product}/availability',

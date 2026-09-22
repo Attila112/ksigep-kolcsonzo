@@ -40,7 +40,8 @@
       "added": "A terméket hozzáadtuk a foglaláshoz.",
       "updated": "A termék mennyisége frissült a foglalásban.",
       "differentPeriodWarning": "A jelenlegi foglalás időszaka: {startDate} – {endDate}. Ehhez a foglaláshoz csak erre az időszakra választhatsz további termékeket.",
-      "differentPeriodError": "A kiválasztott időszak nem egyezik a jelenlegi foglalás időszakával."
+      "differentPeriodError": "A kiválasztott időszak nem egyezik a jelenlegi foglalás időszakával.",
+      "viewBooking": "Foglalás megtekintése"
     }
   }
 }

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 
@@ -6,6 +7,7 @@ type PublicLayoutProps = {
     children: ReactNode;
     applicationName: string;
     productsLabel: string;
+    bookingLabel: string;
     copyright: string;
 };
 
@@ -16,12 +18,15 @@ export function PublicLayout({
     children,
     applicationName,
     productsLabel,
+    bookingLabel,
     copyright,
 }: PublicLayoutProps) {
     return (
         <div className="flex min-h-screen flex-col bg-slate-50 text-slate-950">
-            <Header applicationName={applicationName}
+            <Header
+                applicationName={applicationName}
                 productsLabel={productsLabel}
+                bookingLabel={bookingLabel}
             />
 
             <main className="flex-1">

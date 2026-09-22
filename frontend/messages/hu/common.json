@@ -3,7 +3,8 @@
   "loading": "Betöltés...",
   "error": "Hiba történt.",
   "navigation": {
-    "products": "Gépek"
+    "products": "Gépek",
+    "booking": "Foglalás"
   },
   "footer": {
     "copyright": "© {year} Minden jog fenntartva."
