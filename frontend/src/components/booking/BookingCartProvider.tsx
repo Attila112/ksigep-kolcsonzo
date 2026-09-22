@@ -4,6 +4,7 @@ import {
     createContext,
     useCallback,
     useContext,
+    useEffect,
     useMemo,
     useState,
     type ReactNode,
@@ -17,6 +18,11 @@ import type {
 
 const BOOKING_CART_STORAGE_KEY =
     "booking-cart";
+
+const EMPTY_CART: BookingCartState = {
+    period: null,
+    items: [],
+};
 
 type AddBookingCartItemInput = {
     period: BookingCartPeriod;
@@ -53,18 +59,8 @@ type BookingCartProviderProps = {
 /**
  * Betölti a sessionStorage-ban lévő
  * foglalási kosarat.
- *
- * Szerver oldali renderelésnél a sessionStorage
- * nem érhető el, ezért ilyenkor üres kosarat adunk.
  */
 function loadStoredCart(): BookingCartState {
-    if (typeof window === "undefined") {
-        return {
-            period: null,
-            items: [],
-        };
-    }
-
     try {
         const storedValue =
             window.sessionStorage.getItem(
@@ -72,10 +68,7 @@ function loadStoredCart(): BookingCartState {
             );
 
         if (!storedValue) {
-            return {
-                period: null,
-                items: [],
-            };
+            return EMPTY_CART;
         }
 
         const storedCart =
@@ -97,10 +90,7 @@ function loadStoredCart(): BookingCartState {
             BOOKING_CART_STORAGE_KEY
         );
 
-        return {
-            period: null,
-            items: [],
-        };
+        return EMPTY_CART;
     }
 }
 
@@ -110,10 +100,6 @@ function loadStoredCart(): BookingCartState {
 function saveCart(
     state: BookingCartState
 ): void {
-    if (typeof window === "undefined") {
-        return;
-    }
-
     window.sessionStorage.setItem(
         BOOKING_CART_STORAGE_KEY,
         JSON.stringify(state)
@@ -123,10 +109,41 @@ function saveCart(
 export function BookingCartProvider({
     children,
 }: BookingCartProviderProps) {
+    /**
+     * Fontos:
+     *
+     * A szerver és a kliens első renderje is
+     * ugyanazzal az üres kosárral indul.
+     *
+     * Ez akadályozza meg a hydration mismatch-et.
+     */
     const [cart, setCart] =
         useState<BookingCartState>(
-            loadStoredCart
+            EMPTY_CART
         );
+
+    /**
+     * A sessionStorage tartalmát csak a
+     * kliens hydration után töltjük be.
+     *
+     * A queueMicrotask miatt nem történik
+     * szinkron setState közvetlenül az effectben.
+     */
+    useEffect(() => {
+        let cancelled = false;
+
+        queueMicrotask(() => {
+            if (cancelled) {
+                return;
+            }
+
+            setCart(loadStoredCart());
+        });
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     const addItem = useCallback(
         ({
@@ -138,10 +155,10 @@ export function BookingCartProvider({
                     const samePeriod =
                         currentCart.period
                             .startDate ===
-                        newPeriod.startDate &&
+                            newPeriod.startDate &&
                         currentCart.period
                             .endDate ===
-                        newPeriod.endDate;
+                            newPeriod.endDate;
 
                     if (!samePeriod) {
                         throw new Error(
@@ -188,6 +205,7 @@ export function BookingCartProvider({
         },
         []
     );
+
     const updateQuantity = useCallback(
         (
             productId: number,
@@ -210,7 +228,8 @@ export function BookingCartProvider({
                                 : item
                     );
 
-                const nextCart: BookingCartState = {
+                const nextCart: BookingCartState =
+                {
                     ...currentCart,
                     items: nextItems,
                 };
@@ -251,21 +270,11 @@ export function BookingCartProvider({
     );
 
     const clearCart = useCallback(() => {
-        const emptyCart: BookingCartState =
-        {
-            period: null,
-            items: [],
-        };
+        setCart(EMPTY_CART);
 
-        setCart(emptyCart);
-
-        if (
-            typeof window !== "undefined"
-        ) {
-            window.sessionStorage.removeItem(
-                BOOKING_CART_STORAGE_KEY
-            );
-        }
+        window.sessionStorage.removeItem(
+            BOOKING_CART_STORAGE_KEY
+        );
     }, []);
 
     const hasProduct = useCallback(

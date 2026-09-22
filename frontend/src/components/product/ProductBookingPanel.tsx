@@ -246,14 +246,15 @@ export function ProductBookingPanel({
                         {message && (
                             <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
                                 {message}
+                                <Link
+                                    href="/booking"
+                                    className="mt-2 inline-flex font-semibold underline"
+                                >
+                                    {t("viewBooking")}
+                                </Link>
                             </div>
                         )}
-                        <Link
-                            href="/booking"
-                            className="mt-3 inline-flex font-semibold underline"
-                        >
-                            {t("viewBooking")}
-                        </Link>
+
 
                         {error && (
                             <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
