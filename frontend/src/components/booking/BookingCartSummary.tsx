@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/core/i18n/navigation";
 
 import { useBookingCart } from "@/components/booking/BookingCartProvider";
 import {
@@ -58,6 +59,8 @@ export function BookingCartSummary() {
     const t = useTranslations(
         "Booking.cart"
     );
+
+    const router = useRouter();
 
     const {
         period,
@@ -333,13 +336,7 @@ export function BookingCartSummary() {
                 return;
             }
 
-            /*
-             * Következő lépésben innen navigálunk
-             * tovább a foglalási adatok megadásához.
-             *
-             * Az availability ellenőrzés ezen a
-             * ponton sikeresen lefutott.
-             */
+            router.push("/booking/checkout");
         } finally {
             setCheckingCart(false);
         }

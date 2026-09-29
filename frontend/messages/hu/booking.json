@@ -32,5 +32,86 @@
         "savingPeriod": "Elérhetőség ellenőrzése...",
         "periodUnavailable": "Az időszak nem módosítható, mert egy vagy több kiválasztott gép nem érhető el a szükséges mennyiségben az új időszakban.",
         "periodCheckError": "Az új időszak elérhetőségét nem sikerült ellenőrizni. A foglalás időszaka nem változott meg."
+    },
+    "checkout": {
+        "title": "Foglalás véglegesítése",
+        "description": "Add meg a kapcsolattartási és átvételi adatokat. A foglalás elküldése után a kérelmet jóváhagyjuk, és csak ezt követően válik véglegessé.",
+        "loading": "Foglalási adatok betöltése...",
+        "submit": "Foglalási kérelem elküldése",
+        "backToCart": "Vissza a foglaláshoz",
+        "customer": {
+            "title": "Kapcsolattartási adatok",
+            "description": "Ezeken az elérhetőségeken tudunk kapcsolatba lépni veled a foglalással kapcsolatban.",
+            "name": "Név",
+            "email": "E-mail-cím",
+            "phone": "Telefonszám"
+        },
+        "pickup": {
+            "title": "Átvétel módja",
+            "description": "Válaszd ki, hogyan szeretnéd átvenni a lefoglalt gépeket.",
+            "selfPickup": {
+                "title": "Személyes átvétel",
+                "description": "A gépeket személyesen veszed át az átvételi ponton.",
+                "plannedPickupAt": "Tervezett átvételi időpont"
+            },
+            "delivery": {
+                "title": "Házhoz szállítás",
+                "description": "A gépeket a megadott címre szállítjuk.",
+                "postalCode": "Irányítószám",
+                "city": "Település",
+                "street": "Utca",
+                "houseNumber": "Házszám"
+            }
+        },
+        "note": {
+            "title": "Megjegyzés",
+            "description": "Ha van a foglalással kapcsolatos további információd vagy kérésed, itt megadhatod."
+        },
+        "summary": {
+            "title": "Foglalás összesítése",
+            "period": "Bérlési időszak",
+            "days": "{count} nap",
+            "quantity": "{count} db",
+            "rentalTotal": "Bérleti díj",
+            "depositTotal": "Kaució",
+            "total": "Összesen"
+        },
+        "submitting": "Foglalás elküldése...",
+        "validation": {
+            "nameRequired": "A név megadása kötelező.",
+            "emailRequired": "Az e-mail-cím megadása kötelező.",
+            "emailInvalid": "Érvényes e-mail-címet adj meg.",
+            "phoneRequired": "A telefonszám megadása kötelező.",
+            "pickupTimeRequired": "Add meg a tervezett átvételi időpontot.",
+            "postalCodeRequired": "Az irányítószám megadása kötelező.",
+            "cityRequired": "A település megadása kötelező.",
+            "streetRequired": "Az utca megadása kötelező.",
+            "houseNumberRequired": "A házszám megadása kötelező."
+        },
+        "errors": {
+            "availabilityChanged": "A foglalás egyik tétele már nem érhető el a kiválasztott időszakban vagy a kiválasztott mennyiségben. Lépj vissza a foglaláshoz, és ellenőrizd a tételeket.",
+            "submit": "A foglalási kérelmet nem sikerült elküldeni. Próbáld újra később."
+        }
+    },
+    "success": {
+        "loading": "Foglalás adatainak betöltése...",
+        "title": "Sikeresen elküldted a foglalási kérelmet",
+        "description": "A foglalási kérelmedet rögzítettük. A foglalással kapcsolatos további információkat a(z) {email} e-mail-címen küldjük.",
+        "bookingId": "Foglalás azonosítója",
+        "status": "Állapot",
+        "pending": "Jóváhagyásra vár",
+        "period": "Bérlési időszak",
+        "pickupType": "Átvétel módja",
+        "selfPickup": "Személyes átvétel",
+        "delivery": "Házhoz szállítás",
+        "rentalTotal": "Bérleti díj",
+        "depositTotal": "Kaució",
+        "total": "Összesen",
+        "pendingInfo": "A foglalás jelenleg jóváhagyásra vár. A foglalás még nem tekinthető véglegesnek; a jóváhagyásról külön értesítést küldünk.",
+        "backToProducts": "Vissza a gépekhez",
+        "missing": {
+            "title": "A foglalás adatai már nem érhetők el",
+            "description": "A visszaigazolás adatai ebben a böngészőmunkamenetben már nem találhatók."
+        }
     }
 }
