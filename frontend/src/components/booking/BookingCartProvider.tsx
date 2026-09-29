@@ -45,6 +45,9 @@ type BookingCartContextValue =
             productId: number,
             quantity: number
         ) => void;
+        updatePeriod: (
+            period: BookingCartPeriod
+        ) => void;
     };
 
 const BookingCartContext =
@@ -155,10 +158,10 @@ export function BookingCartProvider({
                     const samePeriod =
                         currentCart.period
                             .startDate ===
-                            newPeriod.startDate &&
+                        newPeriod.startDate &&
                         currentCart.period
                             .endDate ===
-                            newPeriod.endDate;
+                        newPeriod.endDate;
 
                     if (!samePeriod) {
                         throw new Error(
@@ -242,6 +245,31 @@ export function BookingCartProvider({
         []
     );
 
+    const updatePeriod = useCallback(
+        (
+            period: BookingCartPeriod
+        ) => {
+            setCart((currentCart) => {
+                if (
+                    currentCart.items.length === 0
+                ) {
+                    return currentCart;
+                }
+
+                const nextCart: BookingCartState =
+                {
+                    ...currentCart,
+                    period,
+                };
+
+                saveCart(nextCart);
+
+                return nextCart;
+            });
+        },
+        []
+    );
+
     const removeItem = useCallback(
         (productId: number) => {
             setCart((currentCart) => {
@@ -293,6 +321,7 @@ export function BookingCartProvider({
             items: cart.items,
             addItem,
             updateQuantity,
+            updatePeriod,
             removeItem,
             clearCart,
             hasProduct,
@@ -301,6 +330,7 @@ export function BookingCartProvider({
             cart,
             addItem,
             updateQuantity,
+            updatePeriod,
             removeItem,
             clearCart,
             hasProduct,

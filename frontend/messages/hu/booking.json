@@ -20,6 +20,17 @@
         "availabilityError": "Az elérhetőség ellenőrzése nem sikerült.",
         "quantityUnavailable": "A kiválasztott darabszám már nem érhető el.",
         "availabilityCheckError": "Egy vagy több termék elérhetőségét nem sikerült ellenőrizni. Próbáld újra később.",
-        "cartUnavailable": "A foglalásban olyan mennyiség szerepel, amely már nem érhető el."
+        "cartUnavailable": "A foglalásban olyan mennyiség szerepel, amely már nem érhető el.",
+        "commonPeriodTitle": "Közös bérlési időszak",
+        "commonPeriodDescription": "Egy foglaláson belül minden gépre ugyanaz a bérlési időszak vonatkozik. Ezt az időszakot a foglalás leadásáig itt módosíthatod. Ha más időpontra is szeretnél gépet bérelni, ahhoz külön foglalást kell leadnod.",
+        "changePeriod": "Időszak módosítása",
+        "changePeriodTitle": "Bérlési időszak módosítása",
+        "changePeriodDescription": "Válaszd ki az új bérlési időszakot. Mentés előtt ellenőrizzük, hogy a foglalásban szereplő összes gép elérhető-e.",
+        "newPeriod": "Új bérlési időszak",
+        "cancelPeriodChange": "Mégse",
+        "savePeriod": "Időszak mentése",
+        "savingPeriod": "Elérhetőség ellenőrzése...",
+        "periodUnavailable": "Az időszak nem módosítható, mert egy vagy több kiválasztott gép nem érhető el a szükséges mennyiségben az új időszakban.",
+        "periodCheckError": "Az új időszak elérhetőségét nem sikerült ellenőrizni. A foglalás időszaka nem változott meg."
     }
 }

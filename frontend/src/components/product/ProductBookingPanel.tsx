@@ -157,6 +157,8 @@ export function ProductBookingPanel({
         <div>
             <ProductAvailabilityCalendar
                 productId={product.id}
+                fixedPeriod={period}
+                periodLocked={period !== null}
                 onSelectionChange={
                     handleSelectionChange
                 }

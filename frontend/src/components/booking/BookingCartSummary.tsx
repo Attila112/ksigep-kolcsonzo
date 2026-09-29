@@ -10,6 +10,7 @@ import {
     calculateRentalDays,
 } from "@/core/booking/bookingCalculations";
 import { checkBookingAvailability } from "@/services/bookingAvailabilityService";
+import { BookingPeriodEditor } from "@/components/booking/BookingPeriodEditor";
 
 import type {
     BookingAvailabilityItem,
@@ -62,6 +63,7 @@ export function BookingCartSummary() {
         period,
         items,
         updateQuantity,
+        updatePeriod,
         removeItem,
         clearCart,
     } = useBookingCart();
@@ -365,6 +367,35 @@ export function BookingCartSummary() {
                         days: rentalDays,
                     })}
                 </p>
+                <BookingPeriodEditor
+                    period={period}
+                    items={items}
+                    disabled={interactionLocked}
+                    onPeriodChange={(
+                        nextPeriod
+                    ) => {
+                        updatePeriod(
+                            nextPeriod
+                        );
+
+                        /*
+                         * Az előző időszak availability
+                         * eredményei az új időszakra már
+                         * nem érvényesek.
+                         */
+                        setAvailabilityByProduct(
+                            {}
+                        );
+
+                        setUnavailableProductIds(
+                            []
+                        );
+
+                        setAvailabilityError(
+                            false
+                        );
+                    }}
+                />
             </div>
 
             <div className="space-y-3">
